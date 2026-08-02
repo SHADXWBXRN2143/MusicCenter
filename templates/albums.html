@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="section">
+    <div class="section-header">
+        <h2>Все альбомы</h2>
+    </div>
+
+    {% if albums %}
+    <div class="grid">
+        {% for album in albums %}
+        <a href="/albums/{{ album.id }}" class="card">
+            <div class="cover">
+                {% if album.coverArt %}
+                <img src="/cover/{{ album.coverArt }}" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.style.display='flex';">
+                <div class="cover-placeholder" style="display:none;">💿</div>
+                {% else %}
+                <div class="cover-placeholder">💿</div>
+                {% endif %}
+                <button class="play-overlay" data-play-kind="album" data-play-id="{{ album.id }}">▶</button>
+            </div>
+            <div class="card-title">{{ album.name }}</div>
+            <div class="card-subtitle">{{ album.artist }}</div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h2>Альбомы не найдены</h2>
+        <p>Проверьте подключение к Airsonic в config.py.</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

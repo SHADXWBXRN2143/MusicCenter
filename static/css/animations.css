@@ -1,0 +1,75 @@
+/*
+===========================================================
+ MusicCenter
+-----------------------------------------------------------
+ Animations
+
+ Version : 0.2
+===========================================================
+*/
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.now-playing-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.now-playing-badge span {
+    width: 3px;
+    height: 10px;
+    background: var(--spotify-green);
+    border-radius: 2px;
+    animation: eq 0.9s ease-in-out infinite;
+}
+
+.now-playing-badge span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.now-playing-badge span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes eq {
+    0%, 100% {
+        transform: scaleY(0.4);
+    }
+
+    50% {
+        transform: scaleY(1);
+    }
+}

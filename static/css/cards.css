@@ -1,0 +1,159 @@
+/*
+===========================================================
+ MusicCenter
+-----------------------------------------------------------
+ Cards / Grids
+
+ Version : 0.2
+===========================================================
+*/
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 22px;
+}
+
+.card {
+    position: relative;
+
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px;
+
+    transition: background var(--transition), transform var(--transition);
+    animation: fade-in 0.35s ease both;
+}
+
+.card:hover {
+    background: var(--card-hover);
+    transform: translateY(-4px);
+}
+
+.card.round .cover {
+    border-radius: 50%;
+}
+
+.cover {
+    position: relative;
+
+    width: 100%;
+    aspect-ratio: 1;
+
+    background: var(--surface-light);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cover img[hidden] {
+    display: none;
+}
+
+.cover-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    color: var(--text-muted);
+}
+
+.play-overlay {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+
+    background: var(--spotify-green);
+    color: #000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+
+    opacity: 0;
+    transform: translateY(8px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+    transition: opacity var(--transition), transform var(--transition), background var(--transition);
+}
+
+.card:hover .play-overlay,
+.card:focus-within .play-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.play-overlay:hover {
+    background: var(--spotify-green-hover);
+    transform: scale(1.06);
+}
+
+.card-title {
+    margin-top: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-subtitle {
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ===========================
+   Flat rows (e.g. track lists outside album page)
+=========================== */
+
+.row-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.row-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.row-item:hover {
+    background: var(--surface-light);
+}
+
+.row-item .cover {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 6px;
+}
+
+.row-item .row-title {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.row-item .row-subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+}

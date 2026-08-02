@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="album-page">
+
+    <div class="album-header">
+
+        {% if artist.coverArt %}
+        <img
+            class="album-page-cover album-page-cover--round"
+            src="/cover/{{ artist.coverArt }}"
+            alt=""
+            onerror="this.outerHTML='<div class=\'album-page-cover album-page-cover--empty album-page-cover--round\'>🎤</div>';"
+        >
+        {% else %}
+        <div class="album-page-cover album-page-cover--empty album-page-cover--round">🎤</div>
+        {% endif %}
+
+        <div class="album-details">
+            <div class="album-type">Исполнитель</div>
+            <h1>{{ artist.name or 'Исполнитель не найден' }}</h1>
+            <div class="album-meta">
+                <span>{{ artist.albums|length }} альбомов</span>
+            </div>
+        </div>
+
+    </div>
+
+    <h2 class="section-title">Альбомы</h2>
+
+    <div class="grid">
+        {% for album in artist.albums %}
+        <a href="/albums/{{ album.id }}" class="card">
+            <div class="cover">
+                {% if album.coverArt %}
+                <img src="/cover/{{ album.coverArt }}" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.style.display='flex';">
+                <div class="cover-placeholder" style="display:none;">💿</div>
+                {% else %}
+                <div class="cover-placeholder">💿</div>
+                {% endif %}
+                <button class="play-overlay" data-play-kind="album" data-play-id="{{ album.id }}">▶</button>
+            </div>
+            <div class="card-title">{{ album.name }}</div>
+            <div class="card-subtitle">{{ album.year or '' }}</div>
+        </a>
+        {% else %}
+        <p>Альбомы не найдены</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

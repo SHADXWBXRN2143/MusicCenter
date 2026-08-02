@@ -1,0 +1,28 @@
+<aside class="sidebar">
+
+    <div class="logo">
+        <div class="logo-icon">♪</div>
+        <div class="logo-text">MusicCenter</div>
+    </div>
+
+    <nav class="menu">
+
+        <a href="/" class="{{ 'active' if active_page == 'home' else '' }}">
+            <span class="icon">🏠</span><span class="label">Главная</span>
+        </a>
+
+        <a href="/albums" class="{{ 'active' if active_page == 'albums' else '' }}">
+            <span class="icon">💿</span><span class="label">Альбомы</span>
+        </a>
+
+        <a href="/artists" class="{{ 'active' if active_page == 'artists' else '' }}">
+            <span class="icon">🎤</span><span class="label">Исполнители</span>
+        </a>
+
+        <a href="/search" class="{{ 'active' if active_page == 'search' else '' }}">
+            <span class="icon">🔎</span><span class="label">Поиск</span>
+        </a>
+
+    </nav>
+
+</aside>

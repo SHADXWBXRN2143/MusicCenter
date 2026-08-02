@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="album-page">
+
+    <div class="album-header">
+
+        {% if album.coverArt %}
+        <img
+            class="album-page-cover"
+            src="/cover/{{ album.coverArt }}"
+            alt=""
+            onerror="this.outerHTML='<div class=\'album-page-cover album-page-cover--empty\'>💿</div>';"
+        >
+        {% else %}
+        <div class="album-page-cover album-page-cover--empty">💿</div>
+        {% endif %}
+
+        <div class="album-details">
+            <div class="album-type">Альбом</div>
+            <h1>{{ album.name or 'Альбом не найден' }}</h1>
+            {% if album.artist %}<h2>{{ album.artist }}</h2>{% endif %}
+
+            <div class="album-meta">
+                {% if album.year %}<span>{{ album.year }}</span>{% endif %}
+                <span>{{ album.tracks|length }} треков</span>
+            </div>
+
+            {% if album.tracks %}
+            <button class="btn play-album-button" data-play-kind="album" data-play-id="{{ album.id }}">▶ Слушать</button>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <div class="track-section">
+
+        <div class="track-header">
+            <div>#</div>
+            <div>Название</div>
+            <div>Исполнитель</div>
+            <div>Время</div>
+        </div>
+
+        {% for track in album.tracks %}
+        <div class="track-row" data-play-kind="album" data-play-id="{{ album.id }}" data-play-index="{{ loop.index0 }}">
+            <div class="track-number">{{ loop.index }}</div>
+            <div class="track-title"><strong>{{ track.title }}</strong></div>
+            <div class="track-artist">{{ track.artist }}</div>
+            <div class="track-duration">{{ track.duration|duration }}</div>
+        </div>
+        {% else %}
+        <div class="queue-empty">Треки не найдены</div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

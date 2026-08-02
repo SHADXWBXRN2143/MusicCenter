@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="search-page">
+
+    <form class="search-large" action="/search" method="GET" role="search">
+        <input
+            type="text"
+            id="search-input"
+            name="q"
+            value="{{ query }}"
+            placeholder="Исполнители, альбомы, треки"
+            autocomplete="off"
+            autofocus
+        >
+    </form>
+
+    {% if query %}
+
+        {% if results.artists %}
+        <div class="section">
+            <div class="section-header"><h2>Исполнители</h2></div>
+            <div class="grid">
+                {% for artist in results.artists %}
+                <a href="/artists/{{ artist.id }}" class="card round">
+                    <div class="cover">
+                        {% if artist.coverArt %}
+                        <img src="/cover/{{ artist.coverArt }}" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.style.display='flex';">
+                        <div class="cover-placeholder" style="display:none;">🎤</div>
+                        {% else %}
+                        <div class="cover-placeholder">🎤</div>
+                        {% endif %}
+                    </div>
+                    <div class="card-title">{{ artist.name }}</div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if results.albums %}
+        <div class="section">
+            <div class="section-header"><h2>Альбомы</h2></div>
+            <div class="grid">
+                {% for album in results.albums %}
+                <a href="/albums/{{ album.id }}" class="card">
+                    <div class="cover">
+                        {% if album.coverArt %}
+                        <img src="/cover/{{ album.coverArt }}" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.style.display='flex';">
+                        <div class="cover-placeholder" style="display:none;">💿</div>
+                        {% else %}
+                        <div class="cover-placeholder">💿</div>
+                        {% endif %}
+                        <button class="play-overlay" data-play-kind="album" data-play-id="{{ album.id }}">▶</button>
+                    </div>
+                    <div class="card-title">{{ album.name }}</div>
+                    <div class="card-subtitle">{{ album.artist }}</div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if results.songs %}
+        <div class="section">
+            <div class="section-header"><h2>Треки</h2></div>
+            <div class="row-list">
+                {% for song in results.songs %}
+                <div class="row-item" data-play-kind="track" data-play-id="{{ song.id }}">
+                    <div class="cover">
+                        {% if song.coverArt %}
+                        <img src="/cover/{{ song.coverArt }}" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.style.display='flex';">
+                        <div class="cover-placeholder" style="display:none;">🎵</div>
+                        {% else %}
+                        <div class="cover-placeholder">🎵</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="row-title">{{ song.title }}</div>
+                        <div class="row-subtitle">{{ song.artist }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if not results.artists and not results.albums and not results.songs %}
+        <div class="empty-state">
+            <h2>Ничего не найдено</h2>
+            <p>Попробуйте другой запрос.</p>
+        </div>
+        {% endif %}
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

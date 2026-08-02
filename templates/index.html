@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="section">
+    <div class="section-header">
+        <h2>Недавно добавленные альбомы</h2>
+        <a href="/albums">Показать всё</a>
+    </div>
+
+    {% if albums %}
+    <div class="grid">
+        {% for album in albums %}
+        <a href="/albums/{{ album.id }}" class="card">
+            <div class="cover">
+                {% if album.coverArt %}
+                <img src="/cover/{{ album.coverArt }}" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.style.display='flex';">
+                <div class="cover-placeholder" style="display:none;">💿</div>
+                {% else %}
+                <div class="cover-placeholder">💿</div>
+                {% endif %}
+                <button class="play-overlay" data-play-kind="album" data-play-id="{{ album.id }}">▶</button>
+            </div>
+            <div class="card-title">{{ album.name }}</div>
+            <div class="card-subtitle">{{ album.artist }}</div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h2>Пока пусто</h2>
+        <p>Не удалось получить альбомы с Airsonic. Проверьте адрес и логин в config.py.</p>
+    </div>
+    {% endif %}
+</div>
+
+<div class="section">
+    <div class="section-header">
+        <h2>Исполнители</h2>
+        <a href="/artists">Показать всё</a>
+    </div>
+
+    {% if artists %}
+    <div class="grid">
+        {% for artist in artists %}
+        <a href="/artists/{{ artist.id }}" class="card round">
+            <div class="cover">
+                {% if artist.coverArt %}
+                <img src="/cover/{{ artist.coverArt }}" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.style.display='flex';">
+                <div class="cover-placeholder" style="display:none;">🎤</div>
+                {% else %}
+                <div class="cover-placeholder">🎤</div>
+                {% endif %}
+            </div>
+            <div class="card-title">{{ artist.name }}</div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h2>Исполнители не найдены</h2>
+    </div>
+    {% endif %}
+</div>
+
+<div class="section">
+    <div class="section-header">
+        <h2>Треки</h2>
+    </div>
+
+    {% if tracks %}
+    <div class="row-list">
+        {% for track in tracks %}
+        <div class="row-item" data-play-kind="track" data-play-id="{{ track.id }}">
+            <div class="cover">
+                {% if track.coverArt %}
+                <img src="/cover/{{ track.coverArt }}" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.style.display='flex';">
+                <div class="cover-placeholder" style="display:none;">🎵</div>
+                {% else %}
+                <div class="cover-placeholder">🎵</div>
+                {% endif %}
+            </div>
+            <div>
+                <div class="row-title">{{ track.title }}</div>
+                <div class="row-subtitle">{{ track.artist }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h2>Треки не найдены</h2>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

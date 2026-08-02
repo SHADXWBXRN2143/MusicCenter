@@ -1,0 +1,435 @@
+/*
+===========================================================
+ MusicCenter
+-----------------------------------------------------------
+ Layout
+
+ Version : 0.1
+===========================================================
+*/
+
+/* ===========================
+   Sidebar
+=========================== */
+
+.sidebar{
+
+    display:flex;
+
+    flex-direction:column;
+
+    background:#0D0D0D;
+
+    overflow:hidden;
+
+}
+
+.logo{
+
+    height:72px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:0 24px;
+
+    border-bottom:1px solid var(--border);
+
+    flex-shrink:0;
+
+}
+
+.logo-icon{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    background:var(--spotify-green);
+
+    color:#000;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+}
+
+.logo-text{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+}
+
+/* ===========================
+   Navigation
+=========================== */
+
+.menu{
+
+    display:flex;
+
+    flex-direction:column;
+
+    padding:16px;
+
+    gap:8px;
+
+}
+
+.menu a{
+
+    display:flex;
+
+    align-items:center;
+
+    height:48px;
+
+    padding:0 18px;
+
+    border-radius:14px;
+
+    color:var(--text-secondary);
+
+    font-weight:500;
+
+    transition:all .25s ease;
+
+}
+
+.menu a:hover{
+
+    background:var(--surface-light);
+
+    color:var(--text);
+
+}
+
+.menu a.active{
+
+    background:var(--spotify-green);
+
+    color:#000;
+
+    font-weight:700;
+
+}
+
+/* ===========================
+   Main
+=========================== */
+
+.main{
+
+    background:linear-gradient(
+
+        180deg,
+
+        #202020 0%,
+
+        #161616 140px,
+
+        #121212 300px
+
+    );
+
+}
+
+/* ===========================
+   Topbar
+=========================== */
+
+.topbar{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:18px 28px;
+
+    backdrop-filter:blur(16px);
+
+    background:rgba(18,18,18,.65);
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+    z-index:20;
+
+}
+
+.page-title{
+
+    font-size:28px;
+
+    font-weight:700;
+
+}
+
+.search-box{
+
+    width:340px;
+
+    display:flex;
+
+}
+
+.search-box input{
+
+    width:100%;
+
+    height:46px;
+
+    background:#282828;
+
+    color:white;
+
+    padding:0 18px;
+
+    border-radius:30px;
+
+    transition:.25s;
+
+}
+
+.search-box input::placeholder{
+
+    color:#8F8F8F;
+
+}
+
+.search-box input:focus{
+
+    background:#333333;
+
+    box-shadow:0 0 0 2px var(--spotify-green);
+
+}
+
+/* ===========================
+   Content
+=========================== */
+
+.content{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:30px;
+
+}
+
+/* ===========================
+   Section
+=========================== */
+
+.section{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+}
+
+.section-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.section-header h2{
+
+    font-size:28px;
+
+    font-weight:700;
+
+}
+
+.section-header a{
+
+    color:var(--spotify-green);
+
+    font-size:14px;
+
+}
+
+.section-header a:hover{
+
+    text-decoration:underline;
+
+}
+
+/* ===========================
+   Grid
+=========================== */
+
+.grid{
+
+    align-items:start;
+
+}
+
+/* ===========================
+   Empty State
+=========================== */
+
+.empty-state{
+
+    width:100%;
+
+    padding:60px;
+
+    border-radius:18px;
+
+    background:#181818;
+
+    text-align:center;
+
+}
+
+.empty-state h2{
+
+    font-size:26px;
+
+    margin-bottom:10px;
+
+}
+
+.empty-state p{
+
+    color:var(--text-secondary);
+
+}
+
+/* ===========================
+   Loading
+=========================== */
+
+.loading{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:80px;
+
+}
+
+.spinner{
+
+    width:44px;
+
+    height:44px;
+
+    border:4px solid #2D2D2D;
+
+    border-top-color:var(--spotify-green);
+
+    border-radius:50%;
+
+    animation:spin 1s linear infinite;
+
+}
+
+@keyframes spin{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media(max-width:1000px){
+
+    .topbar{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:14px;
+
+        height:auto;
+
+    }
+
+    .search-box{
+
+        width:100%;
+
+    }
+
+}
+
+@media(max-width:800px){
+
+    .logo-text{
+
+        display:none;
+
+    }
+
+    .menu a{
+
+        justify-content:center;
+
+        padding:0;
+
+    }
+
+}
+
+@media(max-width:600px){
+
+    .page-title{
+
+        font-size:22px;
+
+    }
+
+    .content{
+
+        gap:18px;
+
+    }
+
+}

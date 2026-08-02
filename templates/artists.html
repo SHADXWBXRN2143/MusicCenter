@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="section">
+    <div class="section-header">
+        <h2>Все исполнители</h2>
+    </div>
+
+    {% if artists %}
+    <div class="grid">
+        {% for artist in artists %}
+        <a href="/artists/{{ artist.id }}" class="card round">
+            <div class="cover">
+                {% if artist.coverArt %}
+                <img src="/cover/{{ artist.coverArt }}" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.style.display='flex';">
+                <div class="cover-placeholder" style="display:none;">🎤</div>
+                {% else %}
+                <div class="cover-placeholder">🎤</div>
+                {% endif %}
+            </div>
+            <div class="card-title">{{ artist.name }}</div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h2>Исполнители не найдены</h2>
+        <p>Проверьте подключение к Airsonic в config.py.</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
