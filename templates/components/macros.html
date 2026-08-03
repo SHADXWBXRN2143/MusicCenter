@@ -9,10 +9,10 @@
         {% else %}
         <div class="cover-placeholder">{{ icon('disc') }}</div>
         {% endif %}
-        <button class="fav-btn {{ 'active' if album.starred else '' }}" data-star-id="{{ album.id }}" data-star-kind="album" title="В избранное">{{ icon('star') }}</button>
         <button class="play-overlay" data-play-kind="album" data-play-id="{{ album.id }}">{{ icon('play') }}</button>
         <div class="now-playing-icon"><div class="now-playing-badge"><span></span><span></span><span></span></div></div>
     </div>
+    <button class="fav-btn {{ 'active' if album.starred else '' }}" data-star-id="{{ album.id }}" data-star-kind="album" title="В избранное">{{ icon('star') }}</button>
     <div class="card-title">{{ album.name }}</div>
     <div class="card-subtitle">{{ album.artist }}</div>
 </a>
@@ -27,8 +27,8 @@
         {% else %}
         <div class="cover-placeholder">{{ icon('mic') }}</div>
         {% endif %}
-        <button class="fav-btn {{ 'active' if artist.starred else '' }}" data-star-id="{{ artist.id }}" data-star-kind="artist" title="В избранное">{{ icon('star') }}</button>
     </div>
+    <button class="fav-btn {{ 'active' if artist.starred else '' }}" data-star-id="{{ artist.id }}" data-star-kind="artist" title="В избранное">{{ icon('star') }}</button>
     <div class="card-title">{{ artist.name }}</div>
 </a>
 {% endmacro %}
