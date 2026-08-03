@@ -223,6 +223,38 @@
 
 
 
+.album-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+.fav-toggle{
+
+    margin-top:20px;
+
+    height:52px;
+
+}
+
+
+
+.fav-toggle.active{
+
+    color:var(--spotify-green);
+
+}
+
+
+
 /* ==========================================
    Track List
 ========================================== */
@@ -252,9 +284,11 @@
 
         1fr
 
-        250px
+        220px
 
-        100px;
+        80px
+
+        90px;
 
     padding:18px 25px;
 
@@ -280,9 +314,11 @@
 
         1fr
 
-        250px
+        220px
 
-        100px;
+        80px
+
+        90px;
 
     align-items:center;
 
@@ -296,9 +332,63 @@
 
 
 
+.track-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-end;
+
+    gap:10px;
+
+}
+
+
+
+.track-actions button{
+
+    font-size:16px;
+
+    color:var(--text-secondary);
+
+    transition:color var(--transition), transform var(--transition);
+
+}
+
+
+
+.track-actions button:hover{
+
+    color:var(--text);
+
+    transform:scale(1.1);
+
+}
+
+
+
+.track-actions button.active{
+
+    color:var(--spotify-green);
+
+}
+
+
+
 .track-row:hover{
 
     background:#242424;
+
+}
+
+
+
+.track-row.is-playing .track-number,
+
+.track-row.is-playing .track-title strong{
+
+    color:var(--spotify-green);
 
 }
 
@@ -406,7 +496,9 @@
 
             1fr
 
-            80px;
+            60px
+
+            70px;
 
     }
 
@@ -414,6 +506,14 @@
     .track-artist{
 
         display:none;
+
+    }
+
+
+
+    .track-actions{
+
+        gap:8px;
 
     }
 

@@ -15,6 +15,7 @@ import random
 import threading
 
 from core.player import player
+from services.airsonic_service import service
 
 
 class QueueManager:
@@ -25,6 +26,7 @@ class QueueManager:
 
         self.shuffle = False
         self.repeat = "off"  # off | all | one
+        self.radio = False
 
         self._shuffle_order = []
         self._lock = threading.Lock()
@@ -89,13 +91,15 @@ class QueueManager:
         self.repeat = order[(order.index(self.repeat) + 1) % len(order)]
         return self.repeat
 
+    def toggle_radio(self):
+        self.radio = not self.radio
+        return self.radio
+
     # ==========================
     # TRANSPORT
     # ==========================
 
     def next(self, user_initiated=True):
-        stop = False
-
         with self._lock:
             if not self.tracks:
                 return
@@ -105,16 +109,40 @@ class QueueManager:
             else:
                 target = self._advance(self.index, 1)
 
+            last_track = (
+                self.tracks[-1]
+                if target is None and self.radio
+                else None
+            )
+
+        if last_track and self._extend_radio(last_track):
+            with self._lock:
+                target = self._advance(self.index, 1)
+
+        with self._lock:
             if target is None:
                 self.index = -1
                 stop = True
             else:
                 self.index = target
+                stop = False
 
         if stop:
             player.stop()
         else:
             self._play_current()
+
+    def _extend_radio(self, last_track):
+        songs = service.get_similar(last_track.get("artistId"), limit=15)
+
+        if not songs:
+            return False
+
+        with self._lock:
+            self.tracks.extend(songs)
+            self._rebuild_shuffle()
+
+        return True
 
     def previous(self):
         with self._lock:
@@ -178,6 +206,7 @@ class QueueManager:
         state["index"] = self.index
         state["shuffle"] = self.shuffle
         state["repeat"] = self.repeat
+        state["radio"] = self.radio
         state["track"] = self.current()
         state["tracks"] = self.tracks
 

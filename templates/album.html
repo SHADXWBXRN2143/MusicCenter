@@ -27,9 +27,17 @@
                 <span>{{ album.tracks|length }} треков</span>
             </div>
 
-            {% if album.tracks %}
-            <button class="btn play-album-button" data-play-kind="album" data-play-id="{{ album.id }}">▶ Слушать</button>
-            {% endif %}
+            <div class="album-actions">
+                {% if album.tracks %}
+                <button class="btn play-album-button" data-play-kind="album" data-play-id="{{ album.id }}">▶ Слушать</button>
+                {% endif %}
+
+                {% if album.id %}
+                <button class="btn secondary fav-toggle {{ 'active' if album.starred else '' }}" data-star-id="{{ album.id }}" data-star-kind="album">
+                    ★ <span class="fav-toggle-label">{{ 'В избранном' if album.starred else 'В избранное' }}</span>
+                </button>
+                {% endif %}
+            </div>
         </div>
 
     </div>
@@ -41,14 +49,19 @@
             <div>Название</div>
             <div>Исполнитель</div>
             <div>Время</div>
+            <div></div>
         </div>
 
         {% for track in album.tracks %}
-        <div class="track-row" data-play-kind="album" data-play-id="{{ album.id }}" data-play-index="{{ loop.index0 }}">
+        <div class="track-row" data-play-kind="album" data-play-id="{{ album.id }}" data-play-index="{{ loop.index0 }}" data-track-id="{{ track.id }}">
             <div class="track-number">{{ loop.index }}</div>
             <div class="track-title"><strong>{{ track.title }}</strong></div>
             <div class="track-artist">{{ track.artist }}</div>
             <div class="track-duration">{{ track.duration|duration }}</div>
+            <div class="track-actions">
+                <button class="fav-btn-inline {{ 'active' if track.starred else '' }}" data-star-id="{{ track.id }}" title="В избранное">★</button>
+                <button class="queue-btn-inline" data-queue-id="{{ track.id }}" title="Добавить в плейлист">➕</button>
+            </div>
         </div>
         {% else %}
         <div class="queue-empty">Треки не найдены</div>

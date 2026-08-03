@@ -21,10 +21,10 @@
 git clone <репозиторий> MusicCenter
 cd MusicCenter
 
-export AIRSONIC_URL="http://<адрес-airsonic>:8383"
-export AIRSONIC_USERNAME="<логин>"
-export AIRSONIC_PASSWORD="<пароль>"
+cp .env.example .env
+# отредактируйте .env - впишите AIRSONIC_URL/USERNAME/PASSWORD
 
+set -a; source .env; set +a
 ./run.sh
 ```
 
@@ -41,12 +41,12 @@ python app.py
 ## Настройка
 
 Все параметры — в [`config.py`](config.py), большинство можно переопределить
-переменными окружения:
+переменными окружения (см. [`.env.example`](.env.example)):
 
 | Переменная | Назначение | По умолчанию |
 |---|---|---|
-| `AIRSONIC_URL` | адрес Airsonic-сервера | `http://192.168.1.102:8383` |
-| `AIRSONIC_USERNAME` / `AIRSONIC_PASSWORD` | логин/пароль | `admin` / `admin` |
+| `AIRSONIC_URL` | адрес Airsonic-сервера | `http://airsonic.local:4040` |
+| `AIRSONIC_USERNAME` / `AIRSONIC_PASSWORD` | логин/пароль | пусто — обязательно задать |
 | `PLAYER_DEFAULT_VOLUME` | громкость mpv при старте (0-100) | `70` |
 | `PORT` | порт веб-интерфейса | `5000` |
 | `DEBUG` | режим отладки Flask | `false` |
@@ -54,6 +54,44 @@ python app.py
 Версия Subsonic REST API, которую понимает сервер, может отличаться — если
 после запуска библиотека не загружается, проверьте `AIRSONIC_API_VERSION` в
 `config.py` (для Airsonic-Advanced обычно подходит `1.15.0`).
+
+## Автозапуск (systemd)
+
+Чтобы сервер поднимался сам при включении Pi и перезапускался при падении:
+
+```bash
+sudo cp deploy/musiccenter.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now musiccenter
+```
+
+Юнит ожидает, что проект лежит в `/home/admin/MusicCenter`, а `.env` с
+настройками — рядом (`/home/admin/MusicCenter/.env`). Если путь или
+пользователь другие — поправьте `deploy/musiccenter.service` перед копированием.
+
+Проверить статус и логи:
+
+```bash
+sudo systemctl status musiccenter
+sudo journalctl -u musiccenter -f
+```
+
+## Возможности
+
+- Библиотека: артисты, альбомы, поиск с живыми подсказками
+- Плеер: очередь, shuffle, повтор (off/all/one), громкость, перемотка
+- **Radio-режим** — когда очередь заканчивается, подтягивает похожие треки
+  (`getSimilarSongs2`), а если сервер не отдал похожих — просто продолжает
+  случайными треками из библиотеки
+- **Таймер сна** — ставится в полноэкранном плеере (иконка 🌙), выключает
+  паузу через 15/30/45/60 минут; переживает закрытие браузера, так как
+  таймер живёт на сервере, а не на клиенте
+- **Избранное** — ★ на альбомах/исполнителях/треках
+- **Плейлисты** — создание, добавление/удаление треков, воспроизведение
+- Полноэкранный "Сейчас играет" — тап по обложке в мини-плеере
+- Устанавливается как приложение на телефон (PWA) — "Добавить на экран"
+  в браузере (Android/Chrome; на iOS иконка будет системной заглушкой -
+  своей PNG-иконки пока нет, только SVG)
 
 ## Если звука нет
 
@@ -75,5 +113,9 @@ python app.py
 - `services/` — бизнес-логика: `airsonic_service.py` (нормализация данных),
   `artwork.py` (кэш обложек), `queue.py` (очередь воспроизведения)
 - `core/player.py` — управление локальным `mpv` через JSON IPC
-- `routes/` — HTTP-роуты (страницы + `/player/*` REST API)
+- `routes/` — HTTP-роуты (страницы + `/player/*`, `/favorites/*`,
+  `/playlists/*` REST API)
 - `templates/`, `static/` — интерфейс
+- `deploy/musiccenter.service` — systemd-юнит для автозапуска
+- `.env.example` — шаблон переменных окружения (реальный `.env` в
+  `.gitignore`, туда секреты не попадут)

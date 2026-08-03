@@ -8,9 +8,11 @@
  commands the mpv instance running on the Raspberry Pi
  through the /player/* API.
 
- Version : 0.2
+ Version : 0.3
 ===========================================================
 */
+
+const SLEEP_PRESETS = [0, 15, 30, 45, 60];
 
 class MusicPlayer {
 
@@ -23,6 +25,9 @@ class MusicPlayer {
         this.shuffleButton = document.getElementById("shuffle-button");
         this.repeatButton = document.getElementById("repeat-button");
         this.queueButton = document.getElementById("queue-button");
+        this.radioButton = document.getElementById("radio-button");
+        this.sleepButton = document.getElementById("sleep-button");
+        this.sleepLabel = document.getElementById("sleep-label");
 
         this.volumeSlider = document.getElementById("volume-slider");
 
@@ -42,12 +47,29 @@ class MusicPlayer {
         this.queuePanel = document.getElementById("queue-panel");
         this.queueList = document.getElementById("queue-list");
 
+        // Fullscreen "now playing"
+        this.npView = document.getElementById("now-playing-view");
+        this.npClose = document.getElementById("np-close");
+        this.npCover = document.getElementById("np-cover");
+        this.npCoverPlaceholder = document.getElementById("np-cover-placeholder");
+        this.npTitle = document.getElementById("np-title");
+        this.npArtist = document.getElementById("np-artist");
+        this.npSlot = document.getElementById("np-slot");
+        this.trackTrigger = document.getElementById("player-track-trigger");
+
+        this.playerCenter = document.querySelector(".player-center");
+        this.playerBar = document.getElementById("player-bar");
+        this.playerButtonsEl = document.querySelector(".player-buttons");
+        this.playerProgressEl = document.querySelector(".player-progress");
+        this.playerExtraEl = document.querySelector(".player-extra");
+
         if (!this.playButton) {
             return;
         }
 
         this.state = null;
         this.volumeDragging = false;
+        this.sleepIndex = 0;
 
         this._localPosition = 0;
         this._localTimestamp = performance.now();
@@ -66,6 +88,18 @@ class MusicPlayer {
         this.nextButton.addEventListener("click", () => this.run(Api.next()));
         this.shuffleButton.addEventListener("click", () => this.run(Api.toggleShuffle()));
         this.repeatButton.addEventListener("click", () => this.run(Api.cycleRepeat()));
+        this.radioButton.addEventListener("click", () => this.run(Api.toggleRadio()));
+
+        this.sleepButton.addEventListener("click", () => {
+            this.sleepIndex = (this.sleepIndex + 1) % SLEEP_PRESETS.length;
+            const minutes = SLEEP_PRESETS[this.sleepIndex];
+
+            if (minutes === 0) {
+                this.run(Api.cancelSleep());
+            } else {
+                this.run(Api.setSleep(minutes));
+            }
+        });
 
         this.volumeSlider.addEventListener("input", () => {
             this.volumeDragging = true;
@@ -99,6 +133,23 @@ class MusicPlayer {
                 this.renderQueue();
             }
         });
+
+        this.trackTrigger.addEventListener("click", () => this.expand());
+        this.npClose.addEventListener("click", () => this.collapse());
+    }
+
+    expand() {
+        this.npSlot.appendChild(this.playerButtonsEl);
+        this.npSlot.appendChild(this.playerProgressEl);
+        this.npSlot.appendChild(this.playerExtraEl);
+        this.npView.hidden = false;
+    }
+
+    collapse() {
+        this.playerCenter.appendChild(this.playerButtonsEl);
+        this.playerCenter.appendChild(this.playerProgressEl);
+        this.playerBar.appendChild(this.playerExtraEl);
+        this.npView.hidden = true;
     }
 
     async run(promise) {
@@ -130,20 +181,31 @@ class MusicPlayer {
         if (track) {
             this.title.textContent = track.title || "—";
             this.artist.textContent = track.artist || "—";
+            this.npTitle.textContent = track.title || "—";
+            this.npArtist.textContent = track.artist || "—";
 
             if (track.coverArt) {
                 this.cover.src = `/cover/${track.coverArt}`;
                 this.cover.hidden = false;
                 this.coverPlaceholder.style.display = "none";
+                this.npCover.src = `/cover/${track.coverArt}`;
+                this.npCover.hidden = false;
+                this.npCoverPlaceholder.style.display = "none";
             } else {
                 this.cover.hidden = true;
                 this.coverPlaceholder.style.display = "flex";
+                this.npCover.hidden = true;
+                this.npCoverPlaceholder.style.display = "flex";
             }
         } else {
             this.title.textContent = "Ничего не играет";
             this.artist.textContent = "Выберите трек";
+            this.npTitle.textContent = "Ничего не играет";
+            this.npArtist.textContent = "Выберите трек";
             this.cover.hidden = true;
             this.coverPlaceholder.style.display = "flex";
+            this.npCover.hidden = true;
+            this.npCoverPlaceholder.style.display = "flex";
         }
 
         this.playButton.textContent = state.paused ? "▶" : "⏸";
@@ -151,6 +213,15 @@ class MusicPlayer {
         this.shuffleButton.classList.toggle("on", !!state.shuffle);
         this.repeatButton.classList.toggle("on", !!state.repeat && state.repeat !== "off");
         this.repeatButton.textContent = state.repeat === "one" ? "🔂" : "🔁";
+        this.radioButton.classList.toggle("on", !!state.radio);
+
+        if (state.sleep_remaining === null || state.sleep_remaining === undefined) {
+            this.sleepLabel.textContent = "Сон";
+            this.sleepButton.classList.remove("on");
+        } else {
+            this.sleepLabel.textContent = `${Math.ceil(state.sleep_remaining / 60)}м`;
+            this.sleepButton.classList.add("on");
+        }
 
         if (!this.volumeDragging) {
             this.volumeSlider.value = state.volume ?? 70;
@@ -161,6 +232,8 @@ class MusicPlayer {
         if (!this.queuePanel.hidden) {
             this.renderQueue();
         }
+
+        this.syncNowPlayingBadges();
     }
 
     tick() {
@@ -216,6 +289,28 @@ class MusicPlayer {
             `;
 
             this.queueList.appendChild(item);
+        });
+    }
+
+    syncNowPlayingBadges() {
+        const track = this.state && this.state.track;
+        const trackId = track ? String(track.id) : null;
+        const albumId = track && track.albumId ? String(track.albumId) : null;
+
+        document.querySelectorAll("[data-play-id]").forEach((el) => {
+            let match = false;
+
+            if (track) {
+                if (el.dataset.trackId !== undefined) {
+                    match = el.dataset.trackId === trackId;
+                } else if (el.dataset.playKind === "track") {
+                    match = el.dataset.playId === trackId;
+                } else if (el.dataset.playKind === "album") {
+                    match = albumId !== null && el.dataset.playId === albumId;
+                }
+            }
+
+            el.classList.toggle("is-playing", match);
         });
     }
 }

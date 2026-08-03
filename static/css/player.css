@@ -39,6 +39,7 @@
     align-items: center;
     gap: 14px;
     min-width: 0;
+    cursor: pointer;
 }
 
 .player-cover-wrap {
@@ -339,7 +340,7 @@
         display: none;
     }
 
-    .player-extra #volume-slider {
+    .player .player-extra #volume-slider {
         display: none;
     }
 }
@@ -366,12 +367,14 @@
         height: 40px;
     }
 
-    .player-progress {
+    .player .player-progress {
         display: none;
     }
 
-    #shuffle-button,
-    #repeat-button {
+    /* Only hide in the mini bar - when moved into the fullscreen
+       now-playing view (.np-slot) these should stay visible. */
+    .player #shuffle-button,
+    .player #repeat-button {
         display: none;
     }
 
@@ -390,4 +393,170 @@
         width: auto;
         bottom: calc(var(--player-height) + var(--mobile-nav-height) + 12px);
     }
+
+    .now-playing-view {
+        padding-bottom: calc(var(--player-height) + var(--mobile-nav-height) + 20px);
+    }
+}
+
+/* ===========================
+   Fullscreen "now playing"
+=========================== */
+
+.now-playing-view {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 20px 24px calc(var(--player-height) + 30px);
+    overflow-y: auto;
+
+    background: linear-gradient(180deg, #242424 0%, #121212 320px);
+
+    z-index: 200;
+    animation: fade-in 0.2s ease both;
+}
+
+.now-playing-view[hidden] {
+    display: none;
+}
+
+.np-header {
+    width: 100%;
+    max-width: 480px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 6px 0 20px;
+}
+
+.np-header .icon-btn {
+    font-size: 22px;
+}
+
+.np-header-title {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.np-header-spacer {
+    width: 22px;
+}
+
+.np-cover-wrap {
+    position: relative;
+    width: min(320px, 78vw);
+    height: min(320px, 78vw);
+    flex-shrink: 0;
+
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--surface-light);
+    box-shadow: var(--shadow);
+
+    margin-top: 10px;
+}
+
+.np-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.np-cover[hidden] {
+    display: none;
+}
+
+.np-cover-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    color: var(--text-muted);
+}
+
+.np-meta {
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+    margin-top: 26px;
+}
+
+.np-title {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.np-artist {
+    margin-top: 6px;
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+.np-slot {
+    width: 100%;
+    max-width: 480px;
+    margin-top: 30px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.np-slot .player-buttons {
+    justify-content: center;
+    gap: 28px;
+}
+
+.np-slot .play-btn {
+    width: 56px;
+    height: 56px;
+    font-size: 20px;
+}
+
+.np-slot .player-extra {
+    justify-content: center;
+}
+
+.np-modes {
+    width: 100%;
+    max-width: 480px;
+    margin-top: 26px;
+
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+}
+
+.np-modes .icon-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: var(--surface-light);
+}
+
+.np-modes .icon-btn.on {
+    color: #000;
+    background: var(--spotify-green);
+}
+
+/* ===========================
+   "Add to playlist" popover
+=========================== */
+
+.playlist-popover {
+    max-height: 320px;
 }

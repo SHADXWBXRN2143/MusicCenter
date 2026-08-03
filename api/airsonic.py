@@ -200,5 +200,89 @@ class AirsonicClient:
     def stream_url(self, track_id):
         return self._signed_url("stream.view", {"id": track_id})
 
+    # ==========================
+    # SIMILAR / RADIO
+    # ==========================
+
+    def get_similar_songs(self, artist_id, count=20):
+        data = self._request(
+            "getSimilarSongs2.view",
+            {"id": artist_id, "count": count}
+        )
+
+        return data.get("similarSongs2", {}).get("song", [])
+
+    # ==========================
+    # FAVORITES
+    # ==========================
+
+    # Subsonic's star/unstar expect the entity-specific param for
+    # ID3-based albums/artists - a plain "id" is silently ignored for
+    # those (only works for songs).
+    _STAR_PARAM = {"album": "albumId", "artist": "artistId", "song": "id"}
+
+    def star(self, item_id, kind="song"):
+        param = self._STAR_PARAM.get(kind, "id")
+        return self._request("star.view", {param: item_id})
+
+    def unstar(self, item_id, kind="song"):
+        param = self._STAR_PARAM.get(kind, "id")
+        return self._request("unstar.view", {param: item_id})
+
+    def get_starred(self):
+        data = self._request("getStarred2.view")
+        return data.get("starred2", {})
+
+    # ==========================
+    # PLAYLISTS
+    # ==========================
+
+    def get_playlists(self):
+        data = self._request("getPlaylists.view")
+        return data.get("playlists", {}).get("playlist", [])
+
+    def get_playlist(self, playlist_id):
+        data = self._request("getPlaylist.view", {"id": playlist_id})
+        return data.get("playlist", {})
+
+    def create_playlist(self, name, song_ids=None):
+        params = {"name": name}
+
+        if song_ids:
+            params["songId"] = song_ids
+
+        data = self._request("createPlaylist.view", params)
+
+        if data.get("status") != "ok":
+            return {}
+
+        playlist = data.get("playlist")
+
+        if playlist:
+            return playlist
+
+        # Airsonic-Advanced doesn't echo the created playlist back - look
+        # it up by name and take the most recently created match.
+        matches = [p for p in self.get_playlists() if p.get("name") == name]
+
+        if not matches:
+            return {}
+
+        return max(matches, key=lambda p: p.get("created", ""))
+
+    def update_playlist(self, playlist_id, add_song_id=None, remove_index=None):
+        params = {"playlistId": playlist_id}
+
+        if add_song_id is not None:
+            params["songIdToAdd"] = add_song_id
+
+        if remove_index is not None:
+            params["songIndexToRemove"] = remove_index
+
+        return self._request("updatePlaylist.view", params)
+
+    def delete_playlist(self, playlist_id):
+        return self._request("deletePlaylist.view", {"id": playlist_id})
+
 
 client = AirsonicClient()

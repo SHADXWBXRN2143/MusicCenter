@@ -1,0 +1,18 @@
+{
+    "name": "MusicCenter",
+    "short_name": "MusicCenter",
+    "description": "Пульт для домашнего музыкального центра",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#121212",
+    "theme_color": "#1DB954",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/static/icons/icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}

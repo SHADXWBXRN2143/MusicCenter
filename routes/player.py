@@ -38,6 +38,10 @@ def _resolve_tracks(payload):
         album = service.get_album(payload.get("id"))
         return album.get("tracks", [])
 
+    if kind == "playlist":
+        playlist = service.get_playlist(payload.get("id"))
+        return playlist.get("tracks", [])
+
     if kind == "track":
         song = service.get_song(payload.get("id"))
         return [song] if song else []
@@ -125,6 +129,29 @@ def shuffle():
 @player_bp.route("/repeat", methods=["POST"])
 def repeat():
     queue.cycle_repeat()
+    return _state_response()
+
+
+@player_bp.route("/radio", methods=["POST"])
+def radio():
+    queue.toggle_radio()
+    return _state_response()
+
+
+# ==========================
+# SLEEP TIMER
+# ==========================
+
+@player_bp.route("/sleep", methods=["POST"])
+def sleep():
+    payload = request.get_json(silent=True) or {}
+    player.set_sleep(payload.get("minutes", 30))
+    return _state_response()
+
+
+@player_bp.route("/sleep/cancel", methods=["POST"])
+def sleep_cancel():
+    player.cancel_sleep()
     return _state_response()
 
 

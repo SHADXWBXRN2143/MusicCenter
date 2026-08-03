@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "components/macros.html" import album_card, artist_card, track_row %}
+
+{% block content %}
+
+{% if results.artists %}
+<div class="section">
+    <div class="section-header"><h2>Исполнители</h2></div>
+    <div class="grid">
+        {% for artist in results.artists %}
+        {{ artist_card(artist) }}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if results.albums %}
+<div class="section">
+    <div class="section-header"><h2>Альбомы</h2></div>
+    <div class="grid">
+        {% for album in results.albums %}
+        {{ album_card(album) }}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if results.songs %}
+<div class="section">
+    <div class="section-header"><h2>Треки</h2></div>
+    <div class="row-list">
+        {% for song in results.songs %}
+        {{ track_row(song) }}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if not results.artists and not results.albums and not results.songs %}
+<div class="empty-state">
+    <h2>Пока ничего нет в избранном</h2>
+    <p>Нажимайте ★ на альбомах, исполнителях и треках, чтобы они появились здесь.</p>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -8,7 +8,7 @@
 ===========================================================
 """
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 
 import config
 
@@ -18,6 +18,8 @@ from routes.artists import artists_bp
 from routes.search import search_bp
 from routes.cover import cover_bp
 from routes.player import player_bp
+from routes.favorites import favorites_bp
+from routes.playlists import playlists_bp
 
 
 def create_app():
@@ -63,6 +65,21 @@ def create_app():
     app.register_blueprint(search_bp, url_prefix="/search")
     app.register_blueprint(cover_bp)
     app.register_blueprint(player_bp, url_prefix="/player")
+    app.register_blueprint(favorites_bp, url_prefix="/favorites")
+    app.register_blueprint(playlists_bp, url_prefix="/playlists")
+
+    # ==========================================
+    # Service Worker
+    #
+    # Served from the root path (not /static/) so its
+    # default scope covers the whole site, not just /static/.
+    # ==========================================
+
+    @app.route("/sw.js")
+    def service_worker():
+        return send_from_directory(
+            "static/js", "sw.js", mimetype="application/javascript"
+        )
 
     # ==========================================
     # Errors

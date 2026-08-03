@@ -43,6 +43,9 @@ class MPVPlayer:
         self._expect_track = False
         self._track_started = False
 
+        self._sleep_timer = None
+        self._sleep_deadline = None
+
         self._start()
 
     # ==========================
@@ -173,6 +176,38 @@ class MPVPlayer:
         self._set_property("volume", value)
 
     # ==========================
+    # SLEEP TIMER
+    # ==========================
+
+    def set_sleep(self, minutes):
+        self.cancel_sleep()
+
+        minutes = max(1, float(minutes))
+        self._sleep_deadline = time.time() + minutes * 60
+
+        self._sleep_timer = threading.Timer(minutes * 60, self._sleep_fire)
+        self._sleep_timer.daemon = True
+        self._sleep_timer.start()
+
+    def cancel_sleep(self):
+        if self._sleep_timer:
+            self._sleep_timer.cancel()
+
+        self._sleep_timer = None
+        self._sleep_deadline = None
+
+    def _sleep_fire(self):
+        self._sleep_timer = None
+        self._sleep_deadline = None
+        self.pause()
+
+    def _sleep_remaining(self):
+        if not self._sleep_deadline:
+            return None
+
+        return max(0, round(self._sleep_deadline - time.time()))
+
+    # ==========================
     # STATE
     # ==========================
 
@@ -184,6 +219,7 @@ class MPVPlayer:
                 "position": 0,
                 "duration": 0,
                 "volume": config.PLAYER_DEFAULT_VOLUME,
+                "sleep_remaining": self._sleep_remaining(),
             }
 
         return {
@@ -192,6 +228,7 @@ class MPVPlayer:
             "position": self._get_property("time-pos", 0) or 0,
             "duration": self._get_property("duration", 0) or 0,
             "volume": self._get_property("volume", config.PLAYER_DEFAULT_VOLUME),
+            "sleep_remaining": self._sleep_remaining(),
         }
 
     # ==========================

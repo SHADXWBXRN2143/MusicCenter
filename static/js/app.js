@@ -9,6 +9,14 @@
 ===========================================================
 */
 
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch((error) => {
+            console.error("Service worker registration failed:", error);
+        });
+    });
+}
+
 window.Toast = {
     show(message, type = "info") {
         const stack = document.getElementById("toast-stack");
@@ -32,6 +40,10 @@ window.Toast = {
 };
 
 document.addEventListener("click", async (event) => {
+    if (event.target.closest("[data-star-id], [data-queue-id], [data-remove-playlist-id]")) {
+        return;
+    }
+
     const el = event.target.closest("[data-play-kind]");
 
     if (!el) {

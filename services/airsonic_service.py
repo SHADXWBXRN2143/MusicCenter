@@ -135,5 +135,115 @@ class AirsonicService:
             print("Search error:", e)
             return {"artists": [], "albums": [], "songs": []}
 
+    # ==========================
+    # SIMILAR / RADIO
+    # ==========================
+
+    def get_similar(self, artist_id, limit=20):
+        try:
+            songs = []
+
+            if artist_id:
+                songs = self.client.get_similar_songs(artist_id, count=limit)
+
+            if not songs:
+                songs = self.client.get_random_songs(limit=limit)
+
+            return [_with_stream(song) for song in songs]
+        except Exception as e:
+            print("Similar songs error:", e)
+            return []
+
+    # ==========================
+    # FAVORITES
+    # ==========================
+
+    def get_favorites(self):
+        try:
+            starred = self.client.get_starred()
+
+            return {
+                "artists": starred.get("artist", []),
+                "albums": starred.get("album", []),
+                "songs": [_with_stream(song) for song in starred.get("song", [])],
+            }
+        except Exception as e:
+            print("Favorites error:", e)
+            return {"artists": [], "albums": [], "songs": []}
+
+    def star(self, item_id, kind="song"):
+        try:
+            self.client.star(item_id, kind=kind)
+            return True
+        except Exception as e:
+            print("Star error:", e)
+            return False
+
+    def unstar(self, item_id, kind="song"):
+        try:
+            self.client.unstar(item_id, kind=kind)
+            return True
+        except Exception as e:
+            print("Unstar error:", e)
+            return False
+
+    # ==========================
+    # PLAYLISTS
+    # ==========================
+
+    def get_playlists(self):
+        try:
+            return self.client.get_playlists()
+        except Exception as e:
+            print("Playlists error:", e)
+            return []
+
+    def get_playlist(self, playlist_id):
+        try:
+            playlist = self.client.get_playlist(playlist_id)
+
+            if not playlist:
+                return {}
+
+            playlist = dict(playlist)
+            entries = playlist.get("entry", playlist.get("song", []))
+            playlist["tracks"] = [_with_stream(song) for song in entries]
+
+            return playlist
+        except Exception as e:
+            print("Playlist error:", e)
+            return {}
+
+    def create_playlist(self, name, song_ids=None):
+        try:
+            return self.client.create_playlist(name, song_ids=song_ids)
+        except Exception as e:
+            print("Create playlist error:", e)
+            return {}
+
+    def add_to_playlist(self, playlist_id, song_id):
+        try:
+            self.client.update_playlist(playlist_id, add_song_id=song_id)
+            return True
+        except Exception as e:
+            print("Add to playlist error:", e)
+            return False
+
+    def remove_from_playlist(self, playlist_id, index):
+        try:
+            self.client.update_playlist(playlist_id, remove_index=index)
+            return True
+        except Exception as e:
+            print("Remove from playlist error:", e)
+            return False
+
+    def delete_playlist(self, playlist_id):
+        try:
+            self.client.delete_playlist(playlist_id)
+            return True
+        except Exception as e:
+            print("Delete playlist error:", e)
+            return False
+
 
 service = AirsonicService()

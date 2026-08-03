@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="album-page">
+
+    <div class="album-header">
+
+        <div class="album-page-cover album-page-cover--empty">🎶</div>
+
+        <div class="album-details">
+            <div class="album-type">Плейлист</div>
+            <h1>{{ playlist.name or 'Плейлист не найден' }}</h1>
+
+            <div class="album-meta">
+                <span>{{ playlist.tracks|length }} треков</span>
+            </div>
+
+            <div class="album-actions">
+                {% if playlist.tracks %}
+                <button class="btn play-album-button" data-play-kind="playlist" data-play-id="{{ playlist.id }}">▶ Слушать</button>
+                {% endif %}
+
+                {% if playlist.id %}
+                <button class="btn secondary" id="delete-playlist-btn" data-playlist-id="{{ playlist.id }}">Удалить плейлист</button>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="track-section">
+
+        <div class="track-header">
+            <div>#</div>
+            <div>Название</div>
+            <div>Исполнитель</div>
+            <div>Время</div>
+            <div></div>
+        </div>
+
+        {% for track in playlist.tracks %}
+        <div class="track-row" data-play-kind="playlist" data-play-id="{{ playlist.id }}" data-play-index="{{ loop.index0 }}" data-track-id="{{ track.id }}">
+            <div class="track-number">{{ loop.index }}</div>
+            <div class="track-title"><strong>{{ track.title }}</strong></div>
+            <div class="track-artist">{{ track.artist }}</div>
+            <div class="track-duration">{{ track.duration|duration }}</div>
+            <div class="track-actions">
+                <button
+                    class="queue-btn-inline"
+                    data-remove-playlist-id="{{ playlist.id }}"
+                    data-remove-index="{{ loop.index0 }}"
+                    title="Убрать из плейлиста"
+                >✕</button>
+            </div>
+        </div>
+        {% else %}
+        <div class="queue-empty">В этом плейлисте пока нет треков</div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

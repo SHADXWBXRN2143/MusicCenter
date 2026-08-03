@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "components/macros.html" import album_card %}
 
 {% block content %}
 
@@ -10,19 +11,7 @@
     {% if albums %}
     <div class="grid">
         {% for album in albums %}
-        <a href="/albums/{{ album.id }}" class="card">
-            <div class="cover">
-                {% if album.coverArt %}
-                <img src="/cover/{{ album.coverArt }}" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.style.display='flex';">
-                <div class="cover-placeholder" style="display:none;">💿</div>
-                {% else %}
-                <div class="cover-placeholder">💿</div>
-                {% endif %}
-                <button class="play-overlay" data-play-kind="album" data-play-id="{{ album.id }}">▶</button>
-            </div>
-            <div class="card-title">{{ album.name }}</div>
-            <div class="card-subtitle">{{ album.artist }}</div>
-        </a>
+        {{ album_card(album) }}
         {% endfor %}
     </div>
     {% else %}

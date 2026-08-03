@@ -59,12 +59,26 @@ const Api = {
     setVolume(value) { return this.post("/player/volume", { value }); },
     toggleShuffle() { return this.post("/player/shuffle"); },
     cycleRepeat() { return this.post("/player/repeat"); },
+    toggleRadio() { return this.post("/player/radio"); },
+    setSleep(minutes) { return this.post("/player/sleep", { minutes }); },
+    cancelSleep() { return this.post("/player/sleep/cancel"); },
     queueAdd(payload) { return this.post("/player/queue/add", payload); },
     queueClear() { return this.post("/player/queue/clear"); },
 
     // Search
     search(query) { return this.get(`/search/api?q=${encodeURIComponent(query)}`); },
     suggestions(query) { return this.get(`/search/suggestions?q=${encodeURIComponent(query)}`); },
+
+    // Favorites
+    star(id, kind = "song") { return this.post("/favorites/star", { id, kind }); },
+    unstar(id, kind = "song") { return this.post("/favorites/unstar", { id, kind }); },
+
+    // Playlists
+    playlists() { return this.get("/playlists/api"); },
+    createPlaylist(name, songId) { return this.post("/playlists/create", { name, song_id: songId }); },
+    addToPlaylist(playlistId, songId) { return this.post(`/playlists/${playlistId}/add`, { song_id: songId }); },
+    removeFromPlaylist(playlistId, index) { return this.post(`/playlists/${playlistId}/remove`, { index }); },
+    deletePlaylist(playlistId) { return this.post(`/playlists/${playlistId}/delete`); },
 };
 
 window.Api = Api;

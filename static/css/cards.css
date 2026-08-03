@@ -99,6 +99,69 @@
     transform: scale(1.06);
 }
 
+.fav-btn {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.55);
+    color: var(--text);
+    font-size: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    transition: opacity var(--transition), color var(--transition), transform var(--transition);
+}
+
+.card:hover .fav-btn,
+.card:focus-within .fav-btn,
+.fav-btn.active {
+    opacity: 1;
+}
+
+.fav-btn.active {
+    color: var(--spotify-green);
+}
+
+.fav-btn:hover {
+    transform: scale(1.1);
+}
+
+/* ===========================
+   "Now playing" badge
+=========================== */
+
+.now-playing-icon {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.card.is-playing .now-playing-icon,
+.row-item.is-playing .now-playing-icon {
+    display: flex;
+}
+
+.card.is-playing .cover-placeholder,
+.row-item.is-playing .cover-placeholder {
+    opacity: 0.3;
+}
+
+.card.is-playing .card-title,
+.row-item.is-playing .row-title {
+    color: var(--spotify-green);
+}
+
 .card-title {
     margin-top: 12px;
     font-size: 15px;
@@ -148,12 +211,50 @@
     border-radius: 6px;
 }
 
+.row-text {
+    flex: 1;
+    min-width: 0;
+}
+
 .row-item .row-title {
     font-weight: 600;
     font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .row-item .row-subtitle {
     color: var(--text-secondary);
     font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fav-btn-inline,
+.queue-btn-inline {
+    flex-shrink: 0;
+    font-size: 16px;
+    color: var(--text-secondary);
+    opacity: 0;
+    transition: opacity var(--transition), color var(--transition), transform var(--transition);
+}
+
+.row-item:hover .fav-btn-inline,
+.row-item:hover .queue-btn-inline,
+.track-actions .fav-btn-inline,
+.track-actions .queue-btn-inline,
+.fav-btn-inline.active {
+    opacity: 1;
+}
+
+.fav-btn-inline.active {
+    color: var(--spotify-green);
+}
+
+.fav-btn-inline:hover,
+.queue-btn-inline:hover {
+    color: var(--text);
+    transform: scale(1.1);
 }

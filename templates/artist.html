@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "components/macros.html" import album_card %}
 
 {% block content %}
 
@@ -23,6 +24,12 @@
             <div class="album-meta">
                 <span>{{ artist.albums|length }} альбомов</span>
             </div>
+
+            {% if artist.id %}
+            <button class="btn secondary fav-toggle {{ 'active' if artist.starred else '' }}" data-star-id="{{ artist.id }}" data-star-kind="artist">
+                ★ <span class="fav-toggle-label">{{ 'В избранном' if artist.starred else 'В избранное' }}</span>
+            </button>
+            {% endif %}
         </div>
 
     </div>
@@ -31,19 +38,7 @@
 
     <div class="grid">
         {% for album in artist.albums %}
-        <a href="/albums/{{ album.id }}" class="card">
-            <div class="cover">
-                {% if album.coverArt %}
-                <img src="/cover/{{ album.coverArt }}" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.style.display='flex';">
-                <div class="cover-placeholder" style="display:none;">💿</div>
-                {% else %}
-                <div class="cover-placeholder">💿</div>
-                {% endif %}
-                <button class="play-overlay" data-play-kind="album" data-play-id="{{ album.id }}">▶</button>
-            </div>
-            <div class="card-title">{{ album.name }}</div>
-            <div class="card-subtitle">{{ album.year or '' }}</div>
-        </a>
+        {{ album_card(album) }}
         {% else %}
         <p>Альбомы не найдены</p>
         {% endfor %}
