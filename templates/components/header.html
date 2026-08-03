@@ -1,3 +1,4 @@
+{% from "components/macros.html" import icon %}
 <header class="topbar">
 
     <div class="page-title">{{ page_title or 'Главная' }}</div>
@@ -12,6 +13,6 @@
         >
     </form>
 
-    <div class="status">● Онлайн</div>
+    <div class="status">{{ icon('dot') }} Онлайн</div>
 
 </header>

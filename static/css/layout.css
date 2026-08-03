@@ -182,6 +182,30 @@
 
 }
 
+.status{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    color:var(--spotify-green);
+
+    font-size:14px;
+
+    white-space:nowrap;
+
+}
+
+.status .icon{
+
+    width:9px;
+
+    height:9px;
+
+}
+
 .search-box{
 
     width:340px;

@@ -1,14 +1,15 @@
+{% from "components/macros.html" import icon %}
 <div class="now-playing-view" id="now-playing-view" hidden>
 
     <div class="np-header">
-        <button class="icon-btn" id="np-close" title="Свернуть">⌄</button>
+        <button class="icon-btn" id="np-close" title="Свернуть">{{ icon('chevron-down') }}</button>
         <div class="np-header-title">Сейчас играет</div>
         <div class="np-header-spacer"></div>
     </div>
 
     <div class="np-cover-wrap">
         <img id="np-cover" class="np-cover" src="" alt="" hidden>
-        <div class="np-cover-placeholder" id="np-cover-placeholder">🎵</div>
+        <div class="np-cover-placeholder" id="np-cover-placeholder">{{ icon('note') }}</div>
     </div>
 
     <div class="np-meta">
@@ -19,8 +20,8 @@
     <div class="np-slot" id="np-slot"></div>
 
     <div class="np-modes">
-        <button id="radio-button" class="icon-btn" title="Radio: продолжать похожими треками">📻 Radio</button>
-        <button id="sleep-button" class="icon-btn" title="Таймер сна">🌙 <span id="sleep-label">Сон</span></button>
+        <button id="radio-button" class="icon-btn" title="Radio: продолжать похожими треками">{{ icon('radio') }} Radio</button>
+        <button id="sleep-button" class="icon-btn" title="Таймер сна">{{ icon('moon') }} <span id="sleep-label">Сон</span></button>
     </div>
 
 </div>

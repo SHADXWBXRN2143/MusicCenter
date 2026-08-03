@@ -32,7 +32,7 @@ async function openPlaylistPopover(anchorEl, songId) {
 
     const createItem = document.createElement("div");
     createItem.className = "suggestion-item";
-    createItem.innerHTML = '<div class="suggestion-type">+</div><div><strong>Новый плейлист</strong></div>';
+    createItem.innerHTML = '<div class="suggestion-type"><svg class="icon"><use href="/static/icons/sprite.svg#plus"></use></svg></div><div><strong>Новый плейлист</strong></div>';
 
     createItem.addEventListener("click", async () => {
         const name = prompt("Название плейлиста:");
@@ -58,7 +58,7 @@ async function openPlaylistPopover(anchorEl, songId) {
         item.className = "suggestion-item";
 
         item.innerHTML = `
-            <div class="suggestion-type">🎶</div>
+            <div class="suggestion-type"><svg class="icon"><use href="/static/icons/sprite.svg#playlist"></use></svg></div>
             <div>
                 <strong>${playlist.name}</strong>
                 <small>${playlist.songCount || 0} треков</small>

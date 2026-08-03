@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "components/macros.html" import album_card, artist_card, track_row %}
+{% from "components/macros.html" import album_card, artist_card, track_row, icon %}
 
 {% block content %}
 
@@ -39,7 +39,7 @@
 {% if not results.artists and not results.albums and not results.songs %}
 <div class="empty-state">
     <h2>Пока ничего нет в избранном</h2>
-    <p>Нажимайте ★ на альбомах, исполнителях и треках, чтобы они появились здесь.</p>
+    <p>Нажимайте {{ icon('star') }} на альбомах, исполнителях и треках, чтобы они появились здесь.</p>
 </div>
 {% endif %}
 

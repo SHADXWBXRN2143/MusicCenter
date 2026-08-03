@@ -1,34 +1,35 @@
+{% from "components/macros.html" import icon %}
 <aside class="sidebar">
 
     <div class="logo">
-        <div class="logo-icon">♪</div>
+        <div class="logo-icon">{{ icon('note') }}</div>
         <div class="logo-text">MusicCenter</div>
     </div>
 
     <nav class="menu">
 
         <a href="/" class="{{ 'active' if active_page == 'home' else '' }}">
-            <span class="icon">🏠</span><span class="label">Главная</span>
+            {{ icon('home') }}<span class="label">Главная</span>
         </a>
 
         <a href="/albums" class="{{ 'active' if active_page == 'albums' else '' }}">
-            <span class="icon">💿</span><span class="label">Альбомы</span>
+            {{ icon('disc') }}<span class="label">Альбомы</span>
         </a>
 
         <a href="/artists" class="{{ 'active' if active_page == 'artists' else '' }}">
-            <span class="icon">🎤</span><span class="label">Исполнители</span>
+            {{ icon('mic') }}<span class="label">Исполнители</span>
         </a>
 
         <a href="/search" class="{{ 'active' if active_page == 'search' else '' }}">
-            <span class="icon">🔎</span><span class="label">Поиск</span>
+            {{ icon('search') }}<span class="label">Поиск</span>
         </a>
 
         <a href="/playlists" class="{{ 'active' if active_page == 'playlists' else '' }}">
-            <span class="icon">🎶</span><span class="label">Плейлисты</span>
+            {{ icon('playlist') }}<span class="label">Плейлисты</span>
         </a>
 
         <a href="/favorites" class="{{ 'active' if active_page == 'favorites' else '' }}">
-            <span class="icon">★</span><span class="label">Избранное</span>
+            {{ icon('star') }}<span class="label">Избранное</span>
         </a>
 
     </nav>

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "components/macros.html" import icon %}
 
 {% block content %}
 
@@ -6,7 +7,7 @@
 
     <div class="album-header">
 
-        <div class="album-page-cover album-page-cover--empty">🎶</div>
+        <div class="album-page-cover album-page-cover--empty">{{ icon('playlist') }}</div>
 
         <div class="album-details">
             <div class="album-type">Плейлист</div>
@@ -18,7 +19,7 @@
 
             <div class="album-actions">
                 {% if playlist.tracks %}
-                <button class="btn play-album-button" data-play-kind="playlist" data-play-id="{{ playlist.id }}">▶ Слушать</button>
+                <button class="btn play-album-button" data-play-kind="playlist" data-play-id="{{ playlist.id }}">{{ icon('play') }} Слушать</button>
                 {% endif %}
 
                 {% if playlist.id %}
@@ -51,7 +52,7 @@
                     data-remove-playlist-id="{{ playlist.id }}"
                     data-remove-index="{{ loop.index0 }}"
                     title="Убрать из плейлиста"
-                >✕</button>
+                >{{ icon('x') }}</button>
             </div>
         </div>
         {% else %}

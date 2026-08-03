@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "components/macros.html" import album_card %}
+{% from "components/macros.html" import album_card, icon %}
 
 {% block content %}
 
@@ -12,10 +12,11 @@
             class="album-page-cover album-page-cover--round"
             src="/cover/{{ artist.coverArt }}"
             alt=""
-            onerror="this.outerHTML='<div class=\'album-page-cover album-page-cover--empty album-page-cover--round\'>🎤</div>';"
+            onerror="this.hidden=true; this.nextElementSibling.style.display='flex';"
         >
+        <div class="album-page-cover album-page-cover--empty album-page-cover--round" style="display:none;">{{ icon('mic') }}</div>
         {% else %}
-        <div class="album-page-cover album-page-cover--empty album-page-cover--round">🎤</div>
+        <div class="album-page-cover album-page-cover--empty album-page-cover--round">{{ icon('mic') }}</div>
         {% endif %}
 
         <div class="album-details">
@@ -27,7 +28,7 @@
 
             {% if artist.id %}
             <button class="btn secondary fav-toggle {{ 'active' if artist.starred else '' }}" data-star-id="{{ artist.id }}" data-star-kind="artist">
-                ★ <span class="fav-toggle-label">{{ 'В избранном' if artist.starred else 'В избранное' }}</span>
+                {{ icon('star') }} <span class="fav-toggle-label">{{ 'В избранном' if artist.starred else 'В избранное' }}</span>
             </button>
             {% endif %}
         </div>

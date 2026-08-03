@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "components/macros.html" import icon %}
 
 {% block content %}
 
@@ -11,10 +12,11 @@
             class="album-page-cover"
             src="/cover/{{ album.coverArt }}"
             alt=""
-            onerror="this.outerHTML='<div class=\'album-page-cover album-page-cover--empty\'>💿</div>';"
+            onerror="this.hidden=true; this.nextElementSibling.style.display='flex';"
         >
+        <div class="album-page-cover album-page-cover--empty" style="display:none;">{{ icon('disc') }}</div>
         {% else %}
-        <div class="album-page-cover album-page-cover--empty">💿</div>
+        <div class="album-page-cover album-page-cover--empty">{{ icon('disc') }}</div>
         {% endif %}
 
         <div class="album-details">
@@ -29,12 +31,12 @@
 
             <div class="album-actions">
                 {% if album.tracks %}
-                <button class="btn play-album-button" data-play-kind="album" data-play-id="{{ album.id }}">▶ Слушать</button>
+                <button class="btn play-album-button" data-play-kind="album" data-play-id="{{ album.id }}">{{ icon('play') }} Слушать</button>
                 {% endif %}
 
                 {% if album.id %}
                 <button class="btn secondary fav-toggle {{ 'active' if album.starred else '' }}" data-star-id="{{ album.id }}" data-star-kind="album">
-                    ★ <span class="fav-toggle-label">{{ 'В избранном' if album.starred else 'В избранное' }}</span>
+                    {{ icon('star') }} <span class="fav-toggle-label">{{ 'В избранном' if album.starred else 'В избранное' }}</span>
                 </button>
                 {% endif %}
             </div>
@@ -59,8 +61,8 @@
             <div class="track-artist">{{ track.artist }}</div>
             <div class="track-duration">{{ track.duration|duration }}</div>
             <div class="track-actions">
-                <button class="fav-btn-inline {{ 'active' if track.starred else '' }}" data-star-id="{{ track.id }}" title="В избранное">★</button>
-                <button class="queue-btn-inline" data-queue-id="{{ track.id }}" title="Добавить в плейлист">➕</button>
+                <button class="fav-btn-inline {{ 'active' if track.starred else '' }}" data-star-id="{{ track.id }}" title="В избранное">{{ icon('star') }}</button>
+                <button class="queue-btn-inline" data-queue-id="{{ track.id }}" title="Добавить в плейлист">{{ icon('plus') }}</button>
             </div>
         </div>
         {% else %}

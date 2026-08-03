@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+{% from "components/macros.html" import icon %}
 
 {% block content %}
 
 <div class="section">
     <div class="section-header">
         <h2>Плейлисты</h2>
-        <button class="btn" id="create-playlist-btn">+ Новый плейлист</button>
+        <button class="btn" id="create-playlist-btn">{{ icon('plus') }} Новый плейлист</button>
     </div>
 
     {% if playlists %}
@@ -13,8 +14,8 @@
         {% for playlist in playlists %}
         <a href="/playlists/{{ playlist.id }}" class="card">
             <div class="cover">
-                <div class="cover-placeholder">🎶</div>
-                <button class="play-overlay" data-play-kind="playlist" data-play-id="{{ playlist.id }}">▶</button>
+                <div class="cover-placeholder">{{ icon('playlist') }}</div>
+                <button class="play-overlay" data-play-kind="playlist" data-play-id="{{ playlist.id }}">{{ icon('play') }}</button>
             </div>
             <div class="card-title">{{ playlist.name }}</div>
             <div class="card-subtitle">{{ playlist.songCount }} треков</div>
@@ -24,7 +25,7 @@
     {% else %}
     <div class="empty-state">
         <h2>Плейлистов пока нет</h2>
-        <p>Создайте первый кнопкой выше, либо добавьте трек в новый плейлист прямо из списка треков (➕).</p>
+        <p>Создайте первый кнопкой выше, либо добавьте трек в новый плейлист прямо из списка треков ({{ icon('plus') }}).</p>
     </div>
     {% endif %}
 </div>

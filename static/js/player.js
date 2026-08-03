@@ -24,6 +24,8 @@ class MusicPlayer {
 
         this.shuffleButton = document.getElementById("shuffle-button");
         this.repeatButton = document.getElementById("repeat-button");
+        this.repeatIconUse = document.getElementById("repeat-icon-use");
+        this.playIconUse = document.getElementById("play-icon-use");
         this.queueButton = document.getElementById("queue-button");
         this.radioButton = document.getElementById("radio-button");
         this.sleepButton = document.getElementById("sleep-button");
@@ -208,11 +210,11 @@ class MusicPlayer {
             this.npCoverPlaceholder.style.display = "flex";
         }
 
-        this.playButton.textContent = state.paused ? "▶" : "⏸";
+        this.playIconUse.setAttribute("href", `/static/icons/sprite.svg#${state.paused ? "play" : "pause"}`);
 
         this.shuffleButton.classList.toggle("on", !!state.shuffle);
         this.repeatButton.classList.toggle("on", !!state.repeat && state.repeat !== "off");
-        this.repeatButton.textContent = state.repeat === "one" ? "🔂" : "🔁";
+        this.repeatIconUse.setAttribute("href", `/static/icons/sprite.svg#${state.repeat === "one" ? "repeat-one" : "repeat"}`);
         this.radioButton.classList.toggle("on", !!state.radio);
 
         if (state.sleep_remaining === null || state.sleep_remaining === undefined) {
