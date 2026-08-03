@@ -45,11 +45,11 @@ DEBUG = os.getenv("DEBUG", "false").lower() == "true"
 
 AIRSONIC_URL = os.getenv(
     "AIRSONIC_URL",
-    "http://192.168.1.102:8383"
+    "http://airsonic.local:4040"
 )
 
-AIRSONIC_USERNAME = os.getenv("AIRSONIC_USERNAME", "admin")
-AIRSONIC_PASSWORD = os.getenv("AIRSONIC_PASSWORD", "admin")
+AIRSONIC_USERNAME = os.getenv("AIRSONIC_USERNAME", "")
+AIRSONIC_PASSWORD = os.getenv("AIRSONIC_PASSWORD", "")
 
 AIRSONIC_API_VERSION = "1.15.0"
 AIRSONIC_CLIENT_NAME = "MusicCenter"
