@@ -72,6 +72,7 @@ class MPVPlayer:
                     "--idle=yes",
                     "--no-video",
                     "--no-terminal",
+                    f"--ao={config.PLAYER_AUDIO_OUTPUT}",
                     f"--input-ipc-server={self.socket_path}",
                     f"--volume={config.PLAYER_DEFAULT_VOLUME}",
                 ],

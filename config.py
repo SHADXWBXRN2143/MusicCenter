@@ -72,6 +72,13 @@ MPV_SOCKET_PATH = os.getenv(
     "/tmp/musiccenter-mpv.sock"
 )
 
+# ALSA by default: mpv running under systemd (not an interactive login
+# session) can't reach the user's PipeWire/PulseAudio session, so it
+# needs to talk to the sound card directly. Override via env if you
+# need a specific ALSA device, e.g. "alsa/hw:1,0", or "pulse"/"pipewire"
+# when running mpv interactively instead of as a systemd service.
+PLAYER_AUDIO_OUTPUT = os.getenv("PLAYER_AUDIO_OUTPUT", "alsa")
+
 # ----------------------------------------------------------
 # LIBRARY
 # ----------------------------------------------------------
