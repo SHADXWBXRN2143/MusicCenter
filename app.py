@@ -20,6 +20,7 @@ from routes.cover import cover_bp
 from routes.player import player_bp
 from routes.favorites import favorites_bp
 from routes.playlists import playlists_bp
+from routes.kiosk import kiosk_bp
 
 
 def create_app():
@@ -67,6 +68,7 @@ def create_app():
     app.register_blueprint(player_bp, url_prefix="/player")
     app.register_blueprint(favorites_bp, url_prefix="/favorites")
     app.register_blueprint(playlists_bp, url_prefix="/playlists")
+    app.register_blueprint(kiosk_bp, url_prefix="/kiosk")
 
     # ==========================================
     # Service Worker

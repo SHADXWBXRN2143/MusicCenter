@@ -106,6 +106,57 @@ sudo journalctl -u musiccenter -f
 Команды: `/now` — что играет + кнопки play/pause/prev/next/громкость,
 `/search <запрос>` — найти альбом/трек и запустить кнопкой из списка.
 
+## Экран на самом Pi (киоск-режим)
+
+Есть отдельная компактная страница `http://<IP-Pi>:5000/kiosk` — большая
+обложка, название/исполнитель, часы, play/pause/prev/next. Без сайдбара и
+навигации, вёрстка резиновая (`vh`/`vw`/`clamp`), рассчитана на маленький
+экран (типично 3.5", ~480×320), но не привязана к конкретному разрешению.
+
+**Выбор экрана.** Проще всего — 3.5" экран, где GPIO только для питания/тача,
+а видео идёт по отдельному mini-HDMI кабелю: он определяется как обычный
+монитор, без возни с драйверами фреймбуфера под конкретную модель. Если
+берёте "чистый" SPI/GPIO-экран (Waveshare и т.п., видео через GPIO) — там
+нужен драйвер под конкретную модель, напишите, какая именно, когда выберете.
+
+**Настройка автозапуска в киоск-режим** (Raspberry Pi OS Lite, без рабочего
+стола — меньше накладных расходов для устройства, которое всегда показывает
+одно и то же):
+
+```bash
+sudo apt install --no-install-recommends -y \
+    xserver-xorg x11-xserver-utils xinit openbox chromium-browser unclutter
+
+sudo raspi-config
+# System Options → Boot / Auto Login → Console Autologin
+```
+
+В конец `~/.bash_profile` (создайте, если нет):
+```bash
+if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+    startx
+fi
+```
+
+Создайте `~/.xinitrc`:
+```bash
+xset -dpms
+xset s off
+xset s noblank
+unclutter -idle 0.5 -root &
+openbox-session &
+chromium-browser \
+    --kiosk \
+    --noerrdialogs \
+    --disable-infobars \
+    --disable-session-crashed-bubble \
+    --check-for-update-interval=31536000 \
+    http://localhost:5000/kiosk
+```
+
+`sudo reboot` — Pi должен загрузиться прямо в это окно, без рабочего стола и
+без возможности из него выйти (что и нужно для приборной панели).
+
 ## Возможности
 
 - Библиотека: артисты, альбомы, поиск с живыми подсказками
@@ -122,6 +173,7 @@ sudo journalctl -u musiccenter -f
 - Устанавливается как приложение на телефон (PWA) — "Добавить на экран"
   в браузере (Android/Chrome; на iOS иконка будет системной заглушкой -
   своей PNG-иконки пока нет, только SVG)
+- Отдельный компактный экран `/kiosk` для маленького дисплея на самом Pi
 
 ## Если звука нет
 

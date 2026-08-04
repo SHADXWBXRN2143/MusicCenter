@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+
+<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='icons/icon.svg') }}">
+<meta name="theme-color" content="#1DB954">
+
+<title>MusicCenter — киоск</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kiosk.css') }}">
+
+</head>
+<body class="kiosk-body">
+
+{% from "components/macros.html" import icon %}
+
+<div class="kiosk">
+
+    <div class="kiosk-top">
+        <div class="kiosk-clock" id="kiosk-clock">--:--</div>
+        <div class="kiosk-status" id="kiosk-status">{{ icon('dot') }} Онлайн</div>
+    </div>
+
+    <div class="kiosk-cover-wrap">
+        <img id="kiosk-cover" class="kiosk-cover" src="" alt="" hidden>
+        <div class="kiosk-cover-placeholder" id="kiosk-cover-placeholder">{{ icon('note') }}</div>
+    </div>
+
+    <div class="kiosk-meta">
+        <div class="kiosk-title" id="kiosk-title">Ничего не играет</div>
+        <div class="kiosk-artist" id="kiosk-artist">MusicCenter</div>
+    </div>
+
+    <div class="kiosk-progress">
+        <div class="kiosk-progress-fill" id="kiosk-progress-fill"></div>
+    </div>
+
+    <div class="kiosk-times">
+        <span id="kiosk-current-time">0:00</span>
+        <span id="kiosk-total-time">0:00</span>
+    </div>
+
+    <div class="kiosk-controls">
+        <button id="kiosk-prev" class="kiosk-btn">{{ icon('prev') }}</button>
+        <button id="kiosk-play" class="kiosk-btn kiosk-btn-main">
+            <svg class="icon"><use id="kiosk-play-icon" href="/static/icons/sprite.svg#play"></use></svg>
+        </button>
+        <button id="kiosk-next" class="kiosk-btn">{{ icon('next') }}</button>
+    </div>
+
+</div>
+
+<div class="kiosk-banner" id="kiosk-banner" hidden>
+    mpv не найден на этом устройстве — звук воспроизвести нельзя.
+</div>
+
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
+<script src="{{ url_for('static', filename='js/kiosk.js') }}"></script>
+
+</body>
+</html>
