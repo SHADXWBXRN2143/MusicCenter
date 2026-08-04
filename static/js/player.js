@@ -57,6 +57,7 @@ class MusicPlayer {
         this.npTitle = document.getElementById("np-title");
         this.npArtist = document.getElementById("np-artist");
         this.npSlot = document.getElementById("np-slot");
+        this.npWaveform = document.getElementById("np-waveform");
         this.trackTrigger = document.getElementById("player-track-trigger");
 
         this.playerCenter = document.querySelector(".player-center");
@@ -64,6 +65,9 @@ class MusicPlayer {
         this.playerButtonsEl = document.querySelector(".player-buttons");
         this.playerProgressEl = document.querySelector(".player-progress");
         this.playerExtraEl = document.querySelector(".player-extra");
+
+        this.ambientBg = document.getElementById("ambient-bg");
+        this._ambientCoverArt = null;
 
         if (!this.playButton) {
             return;
@@ -210,7 +214,10 @@ class MusicPlayer {
             this.npCoverPlaceholder.style.display = "flex";
         }
 
+        this.updateAmbient(track);
+
         this.playIconUse.setAttribute("href", `/static/icons/sprite.svg#${state.paused ? "play" : "pause"}`);
+        this.npWaveform.classList.toggle("paused", !!state.paused || !state.track);
 
         this.shuffleButton.classList.toggle("on", !!state.shuffle);
         this.repeatButton.classList.toggle("on", !!state.repeat && state.repeat !== "off");
@@ -236,6 +243,21 @@ class MusicPlayer {
         }
 
         this.syncNowPlayingBadges();
+    }
+
+    updateAmbient(track) {
+        if (!this.ambientBg) {
+            return;
+        }
+
+        const coverArt = track && track.coverArt;
+
+        if (coverArt === this._ambientCoverArt) {
+            return;
+        }
+
+        this._ambientCoverArt = coverArt || null;
+        this.ambientBg.style.backgroundImage = coverArt ? `url(/cover/${coverArt})` : "";
     }
 
     tick() {

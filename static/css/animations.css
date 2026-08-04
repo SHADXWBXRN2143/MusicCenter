@@ -73,3 +73,13 @@
         transform: scaleY(1);
     }
 }
+
+@keyframes wave {
+    0%, 100% {
+        height: 15%;
+    }
+
+    50% {
+        height: 100%;
+    }
+}

@@ -19,8 +19,10 @@
     display: flex;
     flex-direction: column;
 
-    background: #0a0a0a;
-    border-right: 1px solid var(--border);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-right: 1px solid var(--glass-border);
 
     z-index: 40;
 }
@@ -31,7 +33,7 @@
     align-items: center;
     gap: 14px;
     padding: 0 24px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--glass-border);
     flex-shrink: 0;
 }
 
@@ -41,6 +43,7 @@
     border-radius: 50%;
 
     background: var(--spotify-green);
+    box-shadow: 0 4px 16px var(--glow);
     color: #000;
 
     display: flex;
@@ -100,6 +103,7 @@
 .menu a.active {
     background: var(--spotify-green);
     color: #000;
+    box-shadow: 0 4px 18px var(--glow);
 }
 
 /* ===========================
@@ -118,9 +122,10 @@
 
         flex-direction: row;
         border-right: none;
-        border-top: 1px solid var(--border);
-        background: rgba(10, 10, 10, 0.97);
-        backdrop-filter: blur(10px);
+        border-top: 1px solid var(--glass-border);
+        background: var(--glass-bg-strong);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
     }
 
     .logo {

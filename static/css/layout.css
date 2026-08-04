@@ -136,17 +136,7 @@
 
 .main{
 
-    background:linear-gradient(
-
-        180deg,
-
-        #202020 0%,
-
-        #161616 140px,
-
-        #121212 300px
-
-    );
+    background:transparent;
 
 }
 
@@ -164,11 +154,13 @@
 
     padding:18px 28px;
 
-    backdrop-filter:blur(16px);
+    backdrop-filter:var(--glass-blur);
 
-    background:rgba(18,18,18,.65);
+    -webkit-backdrop-filter:var(--glass-blur);
 
-    border-bottom:1px solid rgba(255,255,255,.05);
+    background:var(--glass-bg);
+
+    border-bottom:1px solid var(--glass-border);
 
     z-index:20;
 
@@ -220,7 +212,13 @@
 
     height:46px;
 
-    background:#282828;
+    background:var(--glass-bg-strong);
+
+    backdrop-filter:var(--glass-blur);
+
+    -webkit-backdrop-filter:var(--glass-blur);
+
+    border:1px solid var(--glass-border);
 
     color:white;
 
@@ -328,7 +326,13 @@
 
     border-radius:18px;
 
-    background:#181818;
+    background:var(--glass-bg);
+
+    backdrop-filter:var(--glass-blur);
+
+    -webkit-backdrop-filter:var(--glass-blur);
+
+    border:1px solid var(--glass-border);
 
     text-align:center;
 

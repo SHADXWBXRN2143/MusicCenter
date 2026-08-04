@@ -31,6 +31,8 @@ class KioskPlayer {
 
         this.clock = document.getElementById("kiosk-clock");
         this.banner = document.getElementById("kiosk-banner");
+        this.ambientBg = document.getElementById("ambient-bg");
+        this._ambientCoverArt = null;
 
         this.state = null;
         this._localPosition = 0;
@@ -100,7 +102,23 @@ class KioskPlayer {
             `/static/icons/sprite.svg#${state.paused ? "play" : "pause"}`
         );
 
+        this.updateAmbient(track);
         this.setProgressUI(state.position || 0, state.duration || 0);
+    }
+
+    updateAmbient(track) {
+        if (!this.ambientBg) {
+            return;
+        }
+
+        const coverArt = track && track.coverArt;
+
+        if (coverArt === this._ambientCoverArt) {
+            return;
+        }
+
+        this._ambientCoverArt = coverArt || null;
+        this.ambientBg.style.backgroundImage = coverArt ? `url(/cover/${coverArt})` : "";
     }
 
     tick() {
