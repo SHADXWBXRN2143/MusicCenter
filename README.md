@@ -76,6 +76,36 @@ sudo systemctl status musiccenter
 sudo journalctl -u musiccenter -f
 ```
 
+## Telegram-бот
+
+Отдельный процесс (`bot/main.py`), управляет плеером через тот же REST API,
+что и сайт (`/player/*`, `/search/api`), по `http://127.0.0.1:5000` — не
+трогает Airsonic/mpv напрямую и не требует, чтобы сайт был открыт где-либо.
+
+1. Создайте бота через **@BotFather** (`/newbot`), получите токен.
+2. Узнайте свой Telegram ID через **@userinfobot** (и остальных, кому нужен
+   доступ).
+3. В `.env`:
+   ```
+   TELEGRAM_BOT_TOKEN=<токен от BotFather>
+   TELEGRAM_ALLOWED_IDS=123456789,987654321
+   ```
+   Без ID в списке бот отвечает "Доступ запрещён" — это не публичный бот.
+4. Запуск вручную (для проверки):
+   ```bash
+   set -a; source .env; set +a
+   python -m bot.main
+   ```
+5. Автозапуск через systemd — так же, как для сайта:
+   ```bash
+   sudo cp deploy/musiccenter-bot.service /etc/systemd/system/
+   sudo systemctl daemon-reload
+   sudo systemctl enable --now musiccenter-bot
+   ```
+
+Команды: `/now` — что играет + кнопки play/pause/prev/next/громкость,
+`/search <запрос>` — найти альбом/трек и запустить кнопкой из списка.
+
 ## Возможности
 
 - Библиотека: артисты, альбомы, поиск с живыми подсказками
@@ -116,6 +146,8 @@ sudo journalctl -u musiccenter -f
 - `routes/` — HTTP-роуты (страницы + `/player/*`, `/favorites/*`,
   `/playlists/*` REST API)
 - `templates/`, `static/` — интерфейс
-- `deploy/musiccenter.service` — systemd-юнит для автозапуска
+- `bot/` — Telegram-бот, отдельный процесс поверх REST API сайта
+- `deploy/musiccenter.service`, `deploy/musiccenter-bot.service` —
+  systemd-юниты для автозапуска
 - `.env.example` — шаблон переменных окружения (реальный `.env` в
   `.gitignore`, туда секреты не попадут)

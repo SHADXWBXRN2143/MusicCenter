@@ -16,3 +16,8 @@ requests==2.32.3
 
 # Production Server
 gunicorn==23.0.0
+
+# Telegram bot (bot/ package, separate process from the web app)
+# Needs >=22.0: 21.x calls the now-removed implicit asyncio.get_event_loop()
+# fallback and crashes on start under Python 3.14.
+python-telegram-bot==22.8

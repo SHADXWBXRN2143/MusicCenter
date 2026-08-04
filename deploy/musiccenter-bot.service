@@ -1,0 +1,15 @@
+[Unit]
+Description=MusicCenter Telegram Bot
+After=network.target musiccenter.service
+
+[Service]
+Type=simple
+User=admin
+WorkingDirectory=/home/admin/MusicCenter
+EnvironmentFile=/home/admin/MusicCenter/.env
+ExecStart=/home/admin/MusicCenter/venv/bin/python -m bot.main
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
