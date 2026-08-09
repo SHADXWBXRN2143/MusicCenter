@@ -326,11 +326,21 @@
 
     cursor:pointer;
 
+    color-scheme:dark;
+
 }
 
 .sort-select:hover{
 
     background:rgba(255,255,255,.14);
+
+}
+
+.sort-select option{
+
+    background:#181818;
+
+    color:var(--text);
 
 }
 

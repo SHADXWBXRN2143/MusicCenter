@@ -80,18 +80,31 @@ class MPVPlayer:
         except OSError:
             pass
 
+        args = [
+            mpv_bin,
+            "--idle=yes",
+            "--no-video",
+            "--no-terminal",
+            "--gapless-audio=yes",
+            f"--input-ipc-server={self.socket_path}",
+            f"--volume={config.PLAYER_DEFAULT_VOLUME}",
+        ]
+
+        audio_output = config.PLAYER_AUDIO_OUTPUT
+
+        if "/" in audio_output:
+            # "<driver>/<device>" (e.g. "alsa/hw:1,0", "alsa/multi_route") -
+            # mpv's --ao only takes a bare driver name, the device itself
+            # is a separate --audio-device flag.
+            driver = audio_output.split("/", 1)[0]
+            args.append(f"--ao={driver}")
+            args.append(f"--audio-device={audio_output}")
+        else:
+            args.append(f"--ao={audio_output}")
+
         try:
             self._process = subprocess.Popen(
-                [
-                    mpv_bin,
-                    "--idle=yes",
-                    "--no-video",
-                    "--no-terminal",
-                    "--gapless-audio=yes",
-                    f"--ao={config.PLAYER_AUDIO_OUTPUT}",
-                    f"--input-ipc-server={self.socket_path}",
-                    f"--volume={config.PLAYER_DEFAULT_VOLUME}",
-                ],
+                args,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
