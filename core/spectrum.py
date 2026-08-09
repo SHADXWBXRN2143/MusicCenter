@@ -43,17 +43,37 @@ class SpectrumAnalyzer:
         if _DEPS_OK and config.SPECTRUM_CAPTURE_DEVICE:
             threading.Thread(target=self._run, daemon=True).start()
 
+    def _open(self):
+        """
+        Retries opening the capture device for a few seconds - right after
+        the service starts, the loopback card can briefly fail to open
+        (seen in practice: works fine seconds later, same process, same
+        device string), so a single immediate attempt isn't reliable here,
+        the same reasoning MPVPlayer already applies to its own IPC socket.
+        """
+
+        last_error = None
+
+        for _ in range(10):
+            try:
+                return alsaaudio.PCM(
+                    alsaaudio.PCM_CAPTURE,
+                    alsaaudio.PCM_NORMAL,
+                    channels=1,
+                    rate=44100,
+                    format=alsaaudio.PCM_FORMAT_S16_LE,
+                    periodsize=1024,
+                    device=config.SPECTRUM_CAPTURE_DEVICE,
+                )
+            except Exception as e:
+                last_error = e
+                time.sleep(1)
+
+        raise last_error
+
     def _run(self):
         try:
-            pcm = alsaaudio.PCM(
-                alsaaudio.PCM_CAPTURE,
-                alsaaudio.PCM_NORMAL,
-                channels=1,
-                rate=44100,
-                format=alsaaudio.PCM_FORMAT_S16_LE,
-                periodsize=1024,
-                device=config.SPECTRUM_CAPTURE_DEVICE,
-            )
+            pcm = self._open()
         except Exception as e:
             print("SpectrumAnalyzer: capture device unavailable:", e)
             return
