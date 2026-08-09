@@ -18,10 +18,7 @@
     </div>
 
     <div class="waveform paused" id="np-waveform" aria-hidden="true">
-        <span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span>
+        {% for _ in range(32) %}<span></span>{% endfor %}
     </div>
 
     <div class="np-slot" id="np-slot"></div>

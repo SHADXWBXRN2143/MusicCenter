@@ -31,6 +31,7 @@ class KioskPlayer {
 
         this.clock = document.getElementById("kiosk-clock");
         this.banner = document.getElementById("kiosk-banner");
+        this.waveform = document.getElementById("kiosk-waveform");
         this.ambientBg = document.getElementById("ambient-bg");
         this._ambientCoverArt = null;
 
@@ -101,6 +102,7 @@ class KioskPlayer {
             "href",
             `/static/icons/sprite.svg#${state.paused ? "play" : "pause"}`
         );
+        this.waveform.classList.toggle("paused", !!state.paused || !track);
 
         this.updateAmbient(track);
         this.setProgressUI(state.position || 0, state.duration || 0);

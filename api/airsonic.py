@@ -143,11 +143,24 @@ class AirsonicClient:
     # ALBUMS
     # ==========================
 
-    def get_album_list(self, limit=100):
-        data = self._request(
-            "getAlbumList2.view",
-            {"type": "newest", "size": limit}
-        )
+    def get_album_list(self, limit=100, sort="newest"):
+        if sort == "byYear":
+            # This server only returns results for an ascending
+            # fromYear->toYear range - a descending range (which the
+            # Subsonic spec says should sort newest-first) just comes
+            # back empty. Fetch ascending across the full range and
+            # reverse locally instead of trusting server-side ordering.
+            data = self._request(
+                "getAlbumList2.view",
+                {"type": "byYear", "size": 500, "fromYear": 1900, "toYear": 2100},
+            )
+
+            albums = data.get("albumList2", {}).get("album", [])
+            albums.reverse()
+
+            return albums[:limit]
+
+        data = self._request("getAlbumList2.view", {"type": sort, "size": limit})
 
         return data.get("albumList2", {}).get("album", [])
 

@@ -6,6 +6,11 @@
 <div class="section">
     <div class="section-header">
         <h2>Все альбомы</h2>
+        <select class="sort-select" id="album-sort" onchange="location.href='/albums?sort='+this.value">
+            {% for value, label in sort_options.items() %}
+            <option value="{{ value }}" {{ 'selected' if value == sort else '' }}>{{ label }}</option>
+            {% endfor %}
+        </select>
     </div>
 
     {% if albums %}

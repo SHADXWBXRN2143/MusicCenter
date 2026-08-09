@@ -125,6 +125,18 @@ html, body.kiosk-body {
     text-overflow: ellipsis;
 }
 
+.kiosk-waveform {
+    flex-shrink: 0;
+    max-width: 90%;
+    height: clamp(14px, 6vh, 26px);
+    margin-top: 0;
+    gap: 2px;
+}
+
+.kiosk-waveform span {
+    width: 3px;
+}
+
 .kiosk-progress {
     width: 100%;
     height: 4px;

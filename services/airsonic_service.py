@@ -40,9 +40,18 @@ class AirsonicService:
     # ARTISTS
     # ==========================
 
-    def get_artists(self):
+    def get_artists(self, sort="name"):
         try:
-            return self.client.get_artists()
+            artists = self.client.get_artists()
+
+            if sort == "albumCount":
+                artists = sorted(
+                    artists,
+                    key=lambda a: int(a.get("albumCount", 0)),
+                    reverse=True,
+                )
+
+            return artists
         except Exception as e:
             print("Artists error:", e)
             return []
@@ -66,9 +75,9 @@ class AirsonicService:
     # ALBUMS
     # ==========================
 
-    def get_albums(self, limit=20):
+    def get_albums(self, limit=20, sort="newest"):
         try:
-            return self.client.get_album_list(limit=limit)
+            return self.client.get_album_list(limit=limit, sort=sort)
         except Exception as e:
             print("Albums error:", e)
             return []

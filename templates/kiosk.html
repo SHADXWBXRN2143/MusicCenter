@@ -12,6 +12,7 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/player.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/kiosk.css') }}">
 
 </head>
@@ -36,6 +37,10 @@
     <div class="kiosk-meta">
         <div class="kiosk-title" id="kiosk-title">Ничего не играет</div>
         <div class="kiosk-artist" id="kiosk-artist">MusicCenter</div>
+    </div>
+
+    <div class="waveform kiosk-waveform paused" id="kiosk-waveform" aria-hidden="true">
+        {% for _ in range(20) %}<span></span>{% endfor %}
     </div>
 
     <div class="kiosk-progress">
