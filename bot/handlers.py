@@ -116,6 +116,8 @@ async def button_callback(update, context):
         current = state.get("volume", 70)
         delta = 10 if data == "vol_up" else -10
         result = api_client.set_volume(max(0, min(100, current + delta)))
+    elif data == "repeat":
+        result = api_client.cycle_repeat()
     elif data.startswith("pa:"):
         result = api_client.play({"kind": "album", "id": data[3:]})
     elif data.startswith("pt:"):

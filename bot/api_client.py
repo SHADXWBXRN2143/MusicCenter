@@ -35,7 +35,14 @@ def _post(path, payload=None):
 
 
 def get_state():
-    return _get("/player/state")
+    # /player/state responds {"success": .., "state": {...}} - every
+    # caller here wants the flat state dict, not the wrapper.
+    data = _get("/player/state")
+
+    if not data or not data.get("success"):
+        return None
+
+    return data.get("state")
 
 
 def play(payload):
@@ -56,6 +63,10 @@ def previous_track():
 
 def set_volume(value):
     return _post("/player/volume", {"value": value})
+
+
+def cycle_repeat():
+    return _post("/player/repeat")
 
 
 def search(query):

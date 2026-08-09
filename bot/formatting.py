@@ -21,6 +21,9 @@ def format_time(seconds):
     return f"{minutes}:{sec:02d}"
 
 
+REPEAT_LABELS = {"all": "все", "one": "трек"}
+
+
 def now_playing_text(state):
     if not state:
         return "Не удалось получить статус плеера."
@@ -30,15 +33,22 @@ def now_playing_text(state):
     if not track:
         return "🎵 Ничего не играет"
 
+    status = (
+        f"{'⏸ Пауза' if state.get('paused') else '▶ Играет'} · "
+        f"{format_time(state.get('position'))} / {format_time(state.get('duration'))} · "
+        f"🔊 {state.get('volume', 0)}"
+    )
+
+    repeat = REPEAT_LABELS.get(state.get("repeat"))
+
+    if repeat:
+        status += f" · 🔁 {repeat}"
+
     lines = [
         f"🎵 <b>{track.get('title', '—')}</b>",
         track.get("artist") or "",
         "",
-        (
-            f"{'⏸ Пауза' if state.get('paused') else '▶ Играет'} · "
-            f"{format_time(state.get('position'))} / {format_time(state.get('duration'))} · "
-            f"🔊 {state.get('volume', 0)}"
-        ),
+        status,
     ]
 
     if state.get("available") is False:
@@ -50,6 +60,7 @@ def now_playing_text(state):
 
 def now_playing_keyboard(state):
     paused = not state or state.get("paused", True)
+    repeat_label = REPEAT_LABELS.get((state or {}).get("repeat"), "выкл")
 
     return InlineKeyboardMarkup([
         [
@@ -61,5 +72,8 @@ def now_playing_keyboard(state):
             InlineKeyboardButton("🔉 -10", callback_data="vol_down"),
             InlineKeyboardButton("🔄", callback_data="refresh"),
             InlineKeyboardButton("🔊 +10", callback_data="vol_up"),
+        ],
+        [
+            InlineKeyboardButton(f"🔁 Повтор: {repeat_label}", callback_data="repeat"),
         ],
     ])
