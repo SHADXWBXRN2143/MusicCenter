@@ -236,6 +236,10 @@ class MusicPlayer {
 
         if (state.eq_preset && this.eqSelect.value !== state.eq_preset) {
             this.eqSelect.value = state.eq_preset;
+
+            if (this.eqSelect.cselSync) {
+                this.eqSelect.cselSync();
+            }
         }
 
         if (state.sleep_remaining === null || state.sleep_remaining === undefined) {

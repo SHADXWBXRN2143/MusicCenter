@@ -15,7 +15,7 @@
 
 // Bump this whenever static CSS/JS changes ship, or installed clients
 // keep serving the old cached files indefinitely.
-const CACHE_NAME = "musiccenter-static-v4";
+const CACHE_NAME = "musiccenter-static-v5";
 
 const STATIC_ASSETS = [
     "/static/css/base.css",
@@ -27,6 +27,7 @@ const STATIC_ASSETS = [
     "/static/css/player.css",
     "/static/css/animations.css",
     "/static/js/api.js",
+    "/static/js/select.js",
     "/static/js/player.js",
     "/static/js/search.js",
     "/static/js/library.js",

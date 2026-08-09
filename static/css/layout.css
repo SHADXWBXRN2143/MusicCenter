@@ -345,6 +345,139 @@
 }
 
 /* ===========================
+   Custom select (static/js/select.js)
+   Progressively enhances .sort-select so the popup can
+   actually match the glass theme - native <select> option
+   lists can't be styled beyond background/color.
+=========================== */
+
+.csel{
+
+    position:relative;
+
+    display:inline-block;
+
+}
+
+.csel-native{
+
+    display:none;
+
+}
+
+.csel-trigger{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+.csel-trigger .icon{
+
+    width:14px;
+
+    height:14px;
+
+    transition:transform .15s ease;
+
+}
+
+.csel.open .csel-trigger{
+
+    background:rgba(255,255,255,.14);
+
+}
+
+.csel.open .csel-trigger .icon{
+
+    transform:rotate(180deg);
+
+}
+
+.csel-menu{
+
+    position:absolute;
+
+    top:calc(100% + 8px);
+
+    right:0;
+
+    z-index:70;
+
+    min-width:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:2px;
+
+    background:var(--glass-bg-strong);
+
+    backdrop-filter:var(--glass-blur);
+
+    -webkit-backdrop-filter:var(--glass-blur);
+
+    border:1px solid var(--glass-border);
+
+    border-radius:var(--radius-sm);
+
+    box-shadow:var(--shadow);
+
+    padding:6px;
+
+    animation:fade-in .15s ease both;
+
+}
+
+.csel-menu[hidden]{
+
+    display:none;
+
+}
+
+.csel-option{
+
+    background:transparent;
+
+    border:none;
+
+    color:var(--text);
+
+    font-size:14px;
+
+    font-weight:600;
+
+    text-align:left;
+
+    white-space:nowrap;
+
+    padding:9px 12px;
+
+    border-radius:var(--radius-sm);
+
+    cursor:pointer;
+
+}
+
+.csel-option:hover{
+
+    background:rgba(255,255,255,.08);
+
+}
+
+.csel-option.selected{
+
+    background:rgba(29,185,84,.18);
+
+    color:var(--spotify-green);
+
+}
+
+/* ===========================
    Grid
 =========================== */
 
