@@ -58,6 +58,7 @@ class MusicPlayer {
         this.npArtist = document.getElementById("np-artist");
         this.npSlot = document.getElementById("np-slot");
         this.npWaveform = document.getElementById("np-waveform");
+        this.eqSelect = document.getElementById("eq-select");
         this.trackTrigger = document.getElementById("player-track-trigger");
 
         this.playerCenter = document.querySelector(".player-center");
@@ -84,6 +85,7 @@ class MusicPlayer {
         this.poll();
 
         setInterval(() => this.poll(), 1000);
+        setInterval(() => this.pollLevels(), 120);
         requestAnimationFrame(() => this.tick());
     }
 
@@ -142,6 +144,10 @@ class MusicPlayer {
 
         this.trackTrigger.addEventListener("click", () => this.expand());
         this.npClose.addEventListener("click", () => this.collapse());
+
+        this.eqSelect.addEventListener("change", (event) => {
+            this.run(Api.setEq(event.target.value));
+        });
     }
 
     expand() {
@@ -219,10 +225,18 @@ class MusicPlayer {
         this.playIconUse.setAttribute("href", `/static/icons/sprite.svg#${state.paused ? "play" : "pause"}`);
         this.npWaveform.classList.toggle("paused", !!state.paused || !state.track);
 
+        if (state.paused || !state.track) {
+            this.npWaveform.classList.remove("live");
+        }
+
         this.shuffleButton.classList.toggle("on", !!state.shuffle);
         this.repeatButton.classList.toggle("on", !!state.repeat && state.repeat !== "off");
         this.repeatIconUse.setAttribute("href", `/static/icons/sprite.svg#${state.repeat === "one" ? "repeat-one" : "repeat"}`);
         this.radioButton.classList.toggle("on", !!state.radio);
+
+        if (state.eq_preset && this.eqSelect.value !== state.eq_preset) {
+            this.eqSelect.value = state.eq_preset;
+        }
 
         if (state.sleep_remaining === null || state.sleep_remaining === undefined) {
             this.sleepLabel.textContent = "Сон";
@@ -243,6 +257,29 @@ class MusicPlayer {
         }
 
         this.syncNowPlayingBadges();
+    }
+
+    async pollLevels() {
+        if (this.npView.hidden || !this.state || this.state.paused || !this.state.track) {
+            return;
+        }
+
+        const res = await Api.playerLevels();
+
+        if (res && res.success && res.available && res.levels && res.levels.length) {
+            this.renderLevels(res.levels);
+        }
+    }
+
+    renderLevels(levels) {
+        const bars = this.npWaveform.querySelectorAll("span");
+
+        this.npWaveform.classList.add("live");
+
+        bars.forEach((bar, index) => {
+            const value = levels[index % levels.length] || 0;
+            bar.style.height = `${8 + value * 92}%`;
+        });
     }
 
     updateAmbient(track) {

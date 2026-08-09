@@ -13,9 +13,11 @@
 
 import random
 import threading
+import time
 
 from core.player import player
 from services.airsonic_service import service
+from services.lastfm_service import lastfm
 
 
 class QueueManager:
@@ -30,6 +32,8 @@ class QueueManager:
 
         self._shuffle_order = []
         self._lock = threading.Lock()
+
+        self._scrobble_timer = None
 
         player.on_track_end = self._handle_track_end
 
@@ -68,6 +72,7 @@ class QueueManager:
             self.index = -1
             self._shuffle_order = []
 
+        self._cancel_scrobble()
         player.stop()
 
     def current(self):
@@ -189,11 +194,30 @@ class QueueManager:
         random.shuffle(order)
         self._shuffle_order = order
 
+    def _cancel_scrobble(self):
+        if self._scrobble_timer:
+            self._scrobble_timer.cancel()
+
+        self._scrobble_timer = None
+
     def _play_current(self):
+        self._cancel_scrobble()
+
         track = self.current()
 
         if track and track.get("stream"):
             player.load(track["stream"])
+            lastfm.update_now_playing(track)
+
+            duration = track.get("duration") or 0
+
+            if duration >= 30:
+                delay = min(duration / 2, 240)
+                self._scrobble_timer = threading.Timer(
+                    delay, lastfm.scrobble, args=(track, time.time())
+                )
+                self._scrobble_timer.daemon = True
+                self._scrobble_timer.start()
 
     # ==========================
     # STATE

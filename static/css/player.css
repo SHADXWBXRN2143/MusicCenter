@@ -552,6 +552,15 @@
     opacity: 0.35;
 }
 
+/* Real audio levels from core/spectrum.py (opt-in, see README) - JS sets
+   height inline per frame, so the decorative keyframe animation needs to
+   get out of the way instead of fighting it every tick. */
+.waveform.live span {
+    animation: none;
+    opacity: 1;
+    transition: height 0.1s ease;
+}
+
 .waveform span:nth-child(3n) {
     background: var(--accent-teal);
     animation-duration: 1.3s;

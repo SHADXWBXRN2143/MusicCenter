@@ -15,6 +15,7 @@
 from flask import Blueprint, jsonify, request
 
 from core.player import player
+from core.spectrum import spectrum
 from services.airsonic_service import service
 from services.queue import queue
 
@@ -136,6 +137,22 @@ def repeat():
 def radio():
     queue.toggle_radio()
     return _state_response()
+
+
+@player_bp.route("/eq", methods=["POST"])
+def eq():
+    payload = request.get_json(silent=True) or {}
+    player.set_eq(payload.get("preset", "flat"))
+    return _state_response()
+
+
+@player_bp.route("/levels")
+def levels():
+    return jsonify({
+        "success": True,
+        "available": spectrum.available,
+        "levels": spectrum.get_levels(),
+    })
 
 
 # ==========================

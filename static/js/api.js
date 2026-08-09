@@ -60,6 +60,8 @@ const Api = {
     toggleShuffle() { return this.post("/player/shuffle"); },
     cycleRepeat() { return this.post("/player/repeat"); },
     toggleRadio() { return this.post("/player/radio"); },
+    setEq(preset) { return this.post("/player/eq", { preset }); },
+    playerLevels() { return this.get("/player/levels"); },
     setSleep(minutes) { return this.post("/player/sleep", { minutes }); },
     cancelSleep() { return this.post("/player/sleep/cancel"); },
     queueAdd(payload) { return this.post("/player/queue/add", payload); },

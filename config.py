@@ -79,6 +79,32 @@ MPV_SOCKET_PATH = os.getenv(
 # when running mpv interactively instead of as a systemd service.
 PLAYER_AUDIO_OUTPUT = os.getenv("PLAYER_AUDIO_OUTPUT", "alsa")
 
+# Fade-in/fade-out duration (seconds) applied at the start of every track
+# and just before it ends, plus mpv's own --gapless-audio - together they
+# read like a crossfade without the fragility of real overlapping playback.
+PLAYER_FADE_SECONDS = float(os.getenv("PLAYER_FADE_SECONDS", "2.5"))
+
+# ----------------------------------------------------------
+# LIVE SPECTRUM (optional)
+# ----------------------------------------------------------
+
+# Off by default - only starts if a capture device is configured (needs an
+# ALSA loopback set up on the host, see README). Requires numpy + pyalsaaudio,
+# which are NOT in requirements.txt on purpose: this is opt-in hardware setup,
+# not something that should be able to break `pip install -r requirements.txt`
+# for everyone else.
+SPECTRUM_CAPTURE_DEVICE = os.getenv("SPECTRUM_CAPTURE_DEVICE", "")
+SPECTRUM_BAR_COUNT = 32
+SPECTRUM_GAIN = float(os.getenv("SPECTRUM_GAIN", "4000"))
+
+# ----------------------------------------------------------
+# LAST.FM SCROBBLING (optional)
+# ----------------------------------------------------------
+
+LASTFM_API_KEY = os.getenv("LASTFM_API_KEY", "")
+LASTFM_API_SECRET = os.getenv("LASTFM_API_SECRET", "")
+LASTFM_SESSION_KEY = os.getenv("LASTFM_SESSION_KEY", "")
+
 # ----------------------------------------------------------
 # LIBRARY
 # ----------------------------------------------------------

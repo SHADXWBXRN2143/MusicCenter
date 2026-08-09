@@ -45,6 +45,7 @@ class KioskPlayer {
 
         setInterval(() => this.poll(), 1000);
         setInterval(() => this.updateClock(), 1000);
+        setInterval(() => this.pollLevels(), 120);
         requestAnimationFrame(() => this.tick());
     }
 
@@ -104,8 +105,35 @@ class KioskPlayer {
         );
         this.waveform.classList.toggle("paused", !!state.paused || !track);
 
+        if (state.paused || !track) {
+            this.waveform.classList.remove("live");
+        }
+
         this.updateAmbient(track);
         this.setProgressUI(state.position || 0, state.duration || 0);
+    }
+
+    async pollLevels() {
+        if (!this.state || this.state.paused || !this.state.track) {
+            return;
+        }
+
+        const res = await Api.playerLevels();
+
+        if (res && res.success && res.available && res.levels && res.levels.length) {
+            this.renderLevels(res.levels);
+        }
+    }
+
+    renderLevels(levels) {
+        const bars = this.waveform.querySelectorAll("span");
+
+        this.waveform.classList.add("live");
+
+        bars.forEach((bar, index) => {
+            const value = levels[index % levels.length] || 0;
+            bar.style.height = `${8 + value * 92}%`;
+        });
     }
 
     updateAmbient(track) {
