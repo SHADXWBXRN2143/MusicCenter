@@ -71,6 +71,50 @@
         <button class="btn secondary" type="submit">Сохранить PIN</button>
     </form>
 
+    <div class="settings-card">
+        <h3>Диагностика</h3>
+        <p class="settings-hint">
+            Для проверки экрана блокировки/офлайн-режима — открой эту страницу
+            на самом телефоне и посмотри, что покажет ниже.
+        </p>
+        <pre id="diag-output" class="settings-diag">Проверяю…</pre>
+    </div>
+
 </div>
+
+<script>
+(async function diagnoseEnvironment() {
+    const out = document.getElementById("diag-output");
+    const lines = [];
+
+    lines.push(`Адрес: ${location.protocol}//${location.host}`);
+    lines.push(`Защищённый контекст (isSecureContext): ${window.isSecureContext}`);
+    lines.push(`Media Session API доступен: ${"mediaSession" in navigator}`);
+
+    if ("serviceWorker" in navigator) {
+        const reg = await navigator.serviceWorker.getRegistration().catch(() => null);
+        lines.push(`Service Worker зарегистрирован: ${!!reg}`);
+        lines.push(`Эта вкладка под управлением SW: ${!!navigator.serviceWorker.controller}`);
+    } else {
+        lines.push("Service Worker API недоступен в этом браузере");
+    }
+
+    if ("caches" in window) {
+        const keys = await caches.keys();
+        lines.push(`Кэши: ${keys.join(", ") || "(нет)"}`);
+    }
+
+    try {
+        const audio = new Audio("/static/audio/silence.wav");
+        await audio.play();
+        lines.push("Тестовое беззвучное аудио: воспроизведение началось успешно");
+        audio.pause();
+    } catch (e) {
+        lines.push(`Тестовое беззвучное аудио: ОШИБКА — ${e.name}: ${e.message}`);
+    }
+
+    out.textContent = lines.join("\n");
+})();
+</script>
 
 {% endblock %}

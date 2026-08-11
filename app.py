@@ -146,9 +146,17 @@ def create_app():
 
     @app.route("/sw.js")
     def service_worker():
-        return send_from_directory(
+        # Browsers only re-check a service worker script when their HTTP
+        # cache says it's stale - Flask's default static cache headers
+        # let a phone go on serving a byte-identical (and therefore
+        # never-updating) sw.js across visits. no-cache forces a
+        # revalidation every time, so CACHE_NAME bumps actually take
+        # effect on the next page load instead of silently doing nothing.
+        response = send_from_directory(
             "static/js", "sw.js", mimetype="application/javascript"
         )
+        response.headers["Cache-Control"] = "no-cache"
+        return response
 
     # ==========================================
     # Errors
