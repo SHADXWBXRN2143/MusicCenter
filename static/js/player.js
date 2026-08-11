@@ -170,6 +170,23 @@ class MusicPlayer {
         this._silentAnchor = new Audio("/static/audio/silence.wav");
         this._silentAnchor.loop = true;
 
+        // Autoplay permission is per-page-load, not per-site: every full
+        // navigation (this isn't a single-page app) starts a fresh document
+        // with a fresh, un-authorized anchor. If a track is already playing
+        // when the new page loads, the very first poll() tries to start it
+        // before any click has happened on *this* page and gets rejected.
+        // Any real tap anywhere - not just the play button - satisfies
+        // Chrome's gesture requirement for the rest of the page's lifetime,
+        // so grab the first one and retry immediately instead of waiting
+        // up to a second for the next poll() to happen to fix it.
+        const unlockAnchor = () => {
+            if (this.state && !this.state.paused && this.state.track) {
+                this._silentAnchor.play().catch(() => {});
+            }
+        };
+        document.addEventListener("pointerdown", unlockAnchor, { once: true });
+        document.addEventListener("keydown", unlockAnchor, { once: true });
+
         navigator.mediaSession.setActionHandler("play", () => this.run(Api.toggle()));
         navigator.mediaSession.setActionHandler("pause", () => this.run(Api.toggle()));
         navigator.mediaSession.setActionHandler("previoustrack", () => this.run(Api.previous()));
