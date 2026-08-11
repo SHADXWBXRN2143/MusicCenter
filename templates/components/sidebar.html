@@ -32,6 +32,16 @@
             {{ icon('star') }}<span class="label">Избранное</span>
         </a>
 
+        <a href="/settings" class="{{ 'active' if active_page == 'settings' else '' }}">
+            {{ icon('settings') }}<span class="label">Настройки</span>
+        </a>
+
+        {% if pin_enabled %}
+        <a href="/logout">
+            {{ icon('x') }}<span class="label">Выйти</span>
+        </a>
+        {% endif %}
+
     </nav>
 
 </aside>

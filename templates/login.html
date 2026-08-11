@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Вход — MusicCenter</title>
+
+<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='icons/icon.svg') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+
+</head>
+<body>
+
+<div class="login-page">
+    <form class="login-card" method="POST">
+        <div class="login-logo">MusicCenter</div>
+
+        {% if error %}
+        <div class="login-error">{{ error }}</div>
+        {% endif %}
+
+        <input type="password" name="pin" inputmode="numeric" placeholder="PIN" autofocus autocomplete="off">
+        <button class="btn" type="submit">Войти</button>
+    </form>
+</div>
+
+</body>
+</html>

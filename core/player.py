@@ -27,6 +27,7 @@ import threading
 import time
 
 import config
+from services import settings_service
 
 
 # Filter chains for the `af` mpv property (ffmpeg's `equalizer`, applied via
@@ -58,7 +59,9 @@ class MPVPlayer:
         self._sleep_timer = None
         self._sleep_deadline = None
 
-        self._eq_preset = "flat"
+        saved = settings_service.load()
+
+        self._eq_preset = saved.get("eq_preset", "flat")
         self._fade_out_triggered = False
 
         self._start()
@@ -80,6 +83,8 @@ class MPVPlayer:
         except OSError:
             pass
 
+        saved = settings_service.load()
+
         args = [
             mpv_bin,
             "--idle=yes",
@@ -87,10 +92,10 @@ class MPVPlayer:
             "--no-terminal",
             "--gapless-audio=yes",
             f"--input-ipc-server={self.socket_path}",
-            f"--volume={config.PLAYER_DEFAULT_VOLUME}",
+            f"--volume={saved.get('default_volume', config.PLAYER_DEFAULT_VOLUME)}",
         ]
 
-        audio_output = config.PLAYER_AUDIO_OUTPUT
+        audio_output = saved.get("audio_output") or config.PLAYER_AUDIO_OUTPUT
 
         if "/" in audio_output:
             # "<driver>/<device>" (e.g. "alsa/hw:1,0", "alsa/multi_route") -

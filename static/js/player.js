@@ -81,7 +81,10 @@ class MusicPlayer {
         this._localPosition = 0;
         this._localTimestamp = performance.now();
 
+        this._mediaSessionTrackId = null;
+
         this.bindEvents();
+        this.initMediaSession();
         this.poll();
 
         setInterval(() => this.poll(), 1000);
@@ -148,6 +151,63 @@ class MusicPlayer {
         this.eqSelect.addEventListener("change", (event) => {
             this.run(Api.setEq(event.target.value));
         });
+    }
+
+    initMediaSession() {
+        if (!("mediaSession" in navigator)) {
+            return;
+        }
+
+        navigator.mediaSession.setActionHandler("play", () => this.run(Api.toggle()));
+        navigator.mediaSession.setActionHandler("pause", () => this.run(Api.toggle()));
+        navigator.mediaSession.setActionHandler("previoustrack", () => this.run(Api.previous()));
+        navigator.mediaSession.setActionHandler("nexttrack", () => this.run(Api.next()));
+        navigator.mediaSession.setActionHandler("seekto", (details) => {
+            if (details.seekTime !== undefined && details.seekTime !== null) {
+                this.run(Api.seek(details.seekTime));
+            }
+        });
+    }
+
+    updateMediaSession(state, track) {
+        if (!("mediaSession" in navigator)) {
+            return;
+        }
+
+        if (!track) {
+            this._mediaSessionTrackId = null;
+            navigator.mediaSession.metadata = null;
+            navigator.mediaSession.playbackState = "none";
+            return;
+        }
+
+        const trackKey = String(track.id);
+
+        if (this._mediaSessionTrackId !== trackKey) {
+            this._mediaSessionTrackId = trackKey;
+
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: track.title || "",
+                artist: track.artist || "",
+                album: track.album || "",
+                artwork: track.coverArt ? [{ src: `/cover/${track.coverArt}` }] : [],
+            });
+        }
+
+        navigator.mediaSession.playbackState = state.paused ? "paused" : "playing";
+
+        if (state.duration) {
+            try {
+                navigator.mediaSession.setPositionState({
+                    duration: state.duration,
+                    position: Math.min(state.position || 0, state.duration),
+                    playbackRate: 1,
+                });
+            } catch (e) {
+                // Some browsers throw on a stale/out-of-range position - not
+                // worth surfacing, the next poll() corrects it.
+            }
+        }
     }
 
     expand() {
@@ -221,6 +281,7 @@ class MusicPlayer {
         }
 
         this.updateAmbient(track);
+        this.updateMediaSession(state, track);
 
         this.playIconUse.setAttribute("href", `/static/icons/sprite.svg#${state.paused ? "play" : "pause"}`);
         this.npWaveform.classList.toggle("paused", !!state.paused || !state.track);

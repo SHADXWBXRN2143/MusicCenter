@@ -106,6 +106,23 @@ LASTFM_API_SECRET = os.getenv("LASTFM_API_SECRET", "")
 LASTFM_SESSION_KEY = os.getenv("LASTFM_SESSION_KEY", "")
 
 # ----------------------------------------------------------
+# TELEGRAM (optional now-playing notifications)
+#
+# Same env vars bot/config.py reads for the bot process itself -
+# duplicated here (not imported from bot/) on purpose, so the web
+# app and the bot stay separate processes that can restart
+# independently (see bot/config.py).
+# ----------------------------------------------------------
+
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
+
+TELEGRAM_ALLOWED_IDS = {
+    int(uid.strip())
+    for uid in os.getenv("TELEGRAM_ALLOWED_IDS", "").split(",")
+    if uid.strip()
+}
+
+# ----------------------------------------------------------
 # LIBRARY
 # ----------------------------------------------------------
 

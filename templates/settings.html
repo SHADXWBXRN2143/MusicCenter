@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="settings-page">
+
+    <h2 class="section-title">Настройки</h2>
+
+    {% if request.args.get('saved') %}
+    <div class="settings-notice">Сохранено.</div>
+    {% endif %}
+    {% if request.args.get('pin_saved') %}
+    <div class="settings-notice">PIN обновлён.</div>
+    {% endif %}
+    {% if request.args.get('pin_mismatch') %}
+    <div class="settings-notice error">PIN и подтверждение не совпадают.</div>
+    {% endif %}
+
+    <form class="settings-card" method="POST" action="/settings/save">
+        <h3>Плеер по умолчанию</h3>
+
+        <label class="settings-field">
+            <span>Громкость при старте (0-100)</span>
+            <input type="number" name="default_volume" min="0" max="100" value="{{ settings.default_volume }}">
+        </label>
+
+        <label class="settings-field">
+            <span>Эквалайзер по умолчанию</span>
+            <select name="eq_preset" class="sort-select">
+                {% for preset in eq_presets %}
+                <option value="{{ preset }}" {{ 'selected' if preset == settings.eq_preset else '' }}>{{ preset }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label class="settings-field">
+            <span>Аудиовыход mpv</span>
+            <input type="text" name="audio_output" value="{{ settings.audio_output }}" placeholder="alsa, alsa/hw:1,0, pulse...">
+            <small>Громкость и эквалайзер применяются сразу. Аудиовыход — только после <code>sudo systemctl restart musiccenter</code>.</small>
+        </label>
+
+        <label class="settings-toggle">
+            <input type="checkbox" name="telegram_notify_enabled" {{ 'checked' if settings.telegram_notify_enabled else '' }}>
+            <span>Уведомления о смене трека в Telegram-боте</span>
+        </label>
+
+        <button class="btn" type="submit">Сохранить</button>
+    </form>
+
+    <form class="settings-card" method="POST" action="/settings/pin">
+        <h3>Доступ по PIN</h3>
+
+        <p class="settings-hint">
+            {% if settings.pin_hash %}
+            PIN включён — вход в веб-интерфейс требует код. Экран <code>/kiosk</code> на самом Pi PIN не спрашивает.
+            {% else %}
+            PIN не задан — веб-интерфейс открыт всем в локальной сети.
+            {% endif %}
+        </p>
+
+        <label class="settings-field">
+            <span>Новый PIN (оставьте пустым, чтобы выключить защиту)</span>
+            <input type="password" name="new_pin" inputmode="numeric" autocomplete="off">
+        </label>
+
+        <label class="settings-field">
+            <span>Повторите PIN</span>
+            <input type="password" name="confirm_pin" inputmode="numeric" autocomplete="off">
+        </label>
+
+        <button class="btn secondary" type="submit">Сохранить PIN</button>
+    </form>
+
+</div>
+
+{% endblock %}

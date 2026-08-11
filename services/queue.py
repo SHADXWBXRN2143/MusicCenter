@@ -18,6 +18,7 @@ import time
 from core.player import player
 from services.airsonic_service import service
 from services.lastfm_service import lastfm
+from services.telegram_notify import telegram_notify
 
 
 class QueueManager:
@@ -208,6 +209,7 @@ class QueueManager:
         if track and track.get("stream"):
             player.load(track["stream"])
             lastfm.update_now_playing(track)
+            telegram_notify.notify_track(track)
 
             duration = track.get("duration") or 0
 

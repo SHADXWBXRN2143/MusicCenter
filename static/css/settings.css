@@ -1,0 +1,149 @@
+/*
+===========================================================
+ MusicCenter
+-----------------------------------------------------------
+ Settings & Login
+
+ Version : 0.1
+===========================================================
+*/
+
+.settings-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 520px;
+}
+
+.settings-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.settings-card h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.settings-notice {
+    background: rgba(29, 185, 84, 0.15);
+    border: 1px solid rgba(29, 185, 84, 0.4);
+    color: var(--spotify-green-hover);
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+}
+
+.settings-notice.error {
+    background: rgba(227, 72, 72, 0.15);
+    border-color: rgba(227, 72, 72, 0.4);
+    color: #ff8080;
+}
+
+.settings-hint {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.settings-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.settings-field input[type="text"],
+.settings-field input[type="number"],
+.settings-field input[type="password"] {
+    background: #242424;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 15px;
+}
+
+.settings-field input:focus {
+    outline: none;
+    border-color: var(--spotify-green);
+}
+
+.settings-field small {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.settings-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.settings-toggle input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--spotify-green);
+}
+
+/* ===========================
+   Login page
+=========================== */
+
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+}
+
+.login-card {
+    width: min(320px, 90vw);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    text-align: center;
+}
+
+.login-logo {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.login-error {
+    color: #ff8080;
+    font-size: 14px;
+}
+
+.login-card input {
+    background: #242424;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    font-size: 18px;
+    text-align: center;
+    letter-spacing: 4px;
+}
+
+.login-card input:focus {
+    outline: none;
+    border-color: var(--spotify-green);
+}
