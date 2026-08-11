@@ -15,7 +15,7 @@
 
 // Bump this whenever static CSS/JS changes ship, or installed clients
 // keep serving the old cached files indefinitely.
-const CACHE_NAME = "musiccenter-static-v5";
+const CACHE_NAME = "musiccenter-static-v6";
 
 const STATIC_ASSETS = [
     "/static/css/base.css",
@@ -26,6 +26,7 @@ const STATIC_ASSETS = [
     "/static/css/search.css",
     "/static/css/player.css",
     "/static/css/animations.css",
+    "/static/css/settings.css",
     "/static/js/api.js",
     "/static/js/select.js",
     "/static/js/player.js",
@@ -35,6 +36,10 @@ const STATIC_ASSETS = [
     "/static/manifest.json",
     "/static/icons/icon.svg",
     "/static/icons/sprite.svg",
+    "/static/icons/icon-180.png",
+    "/static/icons/icon-192.png",
+    "/static/icons/icon-512.png",
+    "/static/audio/silence.wav",
 ];
 
 self.addEventListener("install", (event) => {

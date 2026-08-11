@@ -158,6 +158,18 @@ class MusicPlayer {
             return;
         }
 
+        // Playback actually happens on the Pi (mpv), not in this tab - so
+        // there's no real <audio> element for the browser to anchor a
+        // media session to. Without one, Chrome won't show lock-screen/
+        // notification controls at all once the tab isn't foregrounded.
+        // A silent, looped, genuinely-playing <audio> element (not muted -
+        // muted elements don't count) works around this: it gives the tab
+        // a real audio session to hang the Media Session UI off of, with
+        // nothing audible since the actual sound comes from the Pi's
+        // speaker. Kept in sync with play/pause in updateMediaSession().
+        this._silentAnchor = new Audio("/static/audio/silence.wav");
+        this._silentAnchor.loop = true;
+
         navigator.mediaSession.setActionHandler("play", () => this.run(Api.toggle()));
         navigator.mediaSession.setActionHandler("pause", () => this.run(Api.toggle()));
         navigator.mediaSession.setActionHandler("previoustrack", () => this.run(Api.previous()));
@@ -178,6 +190,11 @@ class MusicPlayer {
             this._mediaSessionTrackId = null;
             navigator.mediaSession.metadata = null;
             navigator.mediaSession.playbackState = "none";
+
+            if (this._silentAnchor) {
+                this._silentAnchor.pause();
+            }
+
             return;
         }
 
@@ -195,6 +212,18 @@ class MusicPlayer {
         }
 
         navigator.mediaSession.playbackState = state.paused ? "paused" : "playing";
+
+        if (this._silentAnchor) {
+            if (state.paused) {
+                this._silentAnchor.pause();
+            } else {
+                // Rejects if not yet within a user-activation window (e.g.
+                // the very first state poll on page load, before any
+                // click) - harmless, the next real play/pause click will
+                // satisfy the browser's autoplay gesture requirement.
+                this._silentAnchor.play().catch(() => {});
+            }
+        }
 
         if (state.duration) {
             try {

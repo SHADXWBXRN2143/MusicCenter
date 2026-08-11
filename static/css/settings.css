@@ -33,6 +33,19 @@
     font-size: 16px;
 }
 
+/* The themed select's dropdown (static/js/select.js) is a translucent
+   glass panel meant to float over the mostly-empty ambient background -
+   opening it over a form packed with text (this card) let everything
+   behind it bleed through and read as garbled overlapping text. Solid
+   background here, no blur, so it's readable regardless of what's under
+   it. Scoped to settings cards only - the album/artist sort dropdowns
+   elsewhere still use the lighter glass look intentionally. */
+.settings-card .csel-menu {
+    background: #1c1c1c;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
 .settings-notice {
     background: rgba(29, 185, 84, 0.15);
     border: 1px solid rgba(29, 185, 84, 0.4);
