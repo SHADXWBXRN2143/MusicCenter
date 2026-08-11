@@ -102,21 +102,18 @@ class MPVPlayer:
         else:
             args.append(f"--ao={audio_output}")
 
-        try:
-            self._process = subprocess.Popen(
-                args,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-        except Exception as e:
-            print("MPVPlayer: failed to start mpv:", e)
-            return
-
-        for _ in range(50):
-            if os.path.exists(self.socket_path):
+        # Right after the service starts, the music center itself can still
+        # be off/waking up - mpv fails to open the audio device and exits
+        # immediately, before ever creating the IPC socket. A single attempt
+        # isn't reliable here, the same reasoning SpectrumAnalyzer applies to
+        # its own capture device (see _open() there): retry a few times
+        # rather than permanently marking the player unavailable for the
+        # life of the worker process.
+        for _ in range(10):
+            if self._spawn(args):
                 self.available = True
                 break
-            time.sleep(0.1)
+            time.sleep(1)
 
         if not self.available:
             print("MPVPlayer: mpv did not create its IPC socket in time")
@@ -125,6 +122,30 @@ class MPVPlayer:
         atexit.register(self._shutdown)
 
         threading.Thread(target=self._watch_loop, daemon=True).start()
+
+    def _spawn(self, args):
+        try:
+            self._process = subprocess.Popen(
+                args,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except Exception as e:
+            print("MPVPlayer: failed to start mpv:", e)
+            return False
+
+        for _ in range(50):
+            if os.path.exists(self.socket_path):
+                return True
+            if self._process.poll() is not None:
+                # mpv exited before creating the socket - device likely
+                # wasn't ready yet, worth retrying instead of giving up.
+                break
+            time.sleep(0.1)
+
+        self._process.kill()
+        self._process.wait()
+        return False
 
     def _shutdown(self):
         if self._process:
